@@ -1,0 +1,23 @@
+{
+  "name": "manazl.site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "app",
+    "www",
+    "db",
+    "api",
+    "ui"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "db": "^6.0.3",
+    "supabase": "^1.226.4"
+  }
+}

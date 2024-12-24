@@ -1,0 +1,1 @@
+export const cardStyle = {borderRadius:'20px',margin:'5px',borderColor:"grey",borderWidth:'1px',borderBottom:'solid'}

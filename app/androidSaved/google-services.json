@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "202404083933",
+    "project_id": "manazl-6c33c",
+    "storage_bucket": "manazl-6c33c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202404083933:android:66b366f21c957cf8308334",
+        "android_client_info": {
+          "package_name": "com.boyhax.manazl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "202404083933-02puv2cqke2ffn7vqlv513o345kh211o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.boyhax.manazl",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "202404083933-949kfg1mk6eame6j9bgff7cs0fkb71cd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcmEDCAT5Ezws0zPR4sr8uIM5A0CvZbUM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "202404083933-949kfg1mk6eame6j9bgff7cs0fkb71cd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "202404083933-k6ea8b9lbvsltkolb43c8fjqefp4ed01.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.boyhax.manazl"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

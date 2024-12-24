@@ -1,0 +1,7 @@
+{
+  "name": "manazl",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.boyhax.manazl",
+      "sha256_cert_fingerprints": [
+        "F1:60:37:6F:6F:7B:38:37:0D:21:DF:4C:A8:7D:F7:0D:7C:14:9C:D9:46:CF:BA:29:A2:76:42:C0:C3:95:EA:B5",
+        "8A:0B:30:00:E4:C4:39:6B:53:B0:04:32:D6:11:5E:32:E9:11:74:C4:AE:66:90:1F:C2:8E:06:CD:30:A3:2F:C5"
+      ]
+    }
+  }
+]
