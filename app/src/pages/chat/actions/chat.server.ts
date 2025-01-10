@@ -37,7 +37,7 @@ export async function getChatId(listing_id: string): Promise<{ id: string }> {
 async function newChat(listing_id) {
   const { data, error } = await supabase
     .from('chats')
-    .insert({ listing_id })
+    .upsert({ listing_id })
     .select('id')
     .single()
   if (error) throw Error(error.message)

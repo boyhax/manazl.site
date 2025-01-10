@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useTranslate } from "@tolgee/react";
 import { addDays, differenceInDays } from "date-fns";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
@@ -73,7 +73,7 @@ export default function ListingDetailPage() {
   const [room, setRoom] = useState<{ room_id, room_type, total_cost, }>();
   const [dateRange, setDateRange] = useState({ from: new Date(), to: addDays(new Date(), 1) });
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-
+  const [params] = useSearchParams()
   const mapRef = useRef<Map>(null);
   const { data: listingData, isLoading, error } = useQuery({
     queryKey: ['listing', id],
@@ -113,12 +113,9 @@ export default function ListingDetailPage() {
     setBookingConfirming(true);
     try {
       const { data, error } = await create_booking({
-        title: `${listingData.title} - ${room.room_type}`,
         variant_id: room.room_id,
-        listing_id: listingData.id,
         start_date: dateRange.from,
         end_date: addDays(dateRange.to, -1),
-        total_pay: room.total_cost,
       });
       if (error) throw Error(error.message)
       navigate(`/account/bookings/${data.id}`);
@@ -132,7 +129,9 @@ export default function ListingDetailPage() {
       setBookingConfirming(false);
     }
   };
-
+  function goAvailable() {
+    navigate('available?' + params.toString())
+  }
   if (isLoading) return <LoadingSpinnerComponent type="Infinity" />;
   if (error) throw Error(error.message)
   let cost = roomsData ? get_cost(roomsData) : null;
@@ -173,7 +172,8 @@ export default function ListingDetailPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.3 }}
             >
-              <Button onClick={() => setIsBookingOpen(true)}>
+
+              <Button onClick={goAvailable}>
                 {t("Book Now")}
               </Button>
 

@@ -25,7 +25,7 @@ yarn-debug.log*
 yarn-error.log*
 
 resources/android/**/*
-package.json
+
 
 pnpm-lock.yaml
 

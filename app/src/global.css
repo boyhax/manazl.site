@@ -93,3 +93,26 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Add this to your global CSS file */
+* {
+  scroll-behavior: smooth;
+}
+
+/* For webkit browsers */
+::-webkit-scrollbar {
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

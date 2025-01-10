@@ -21,6 +21,7 @@ import useSearchfilter from '@/hooks/useSearchFilter'
 import LoadingSpinnerComponent from 'react-spinners-components'
 import { useQuery } from '@tanstack/react-query'
 import { ToastAction } from '@/components/ui/toast'
+import Page from '@/components/Page'
 
 const getdata = (id) => async () => {
     const supabase = createClient();
@@ -115,10 +116,8 @@ export default function BookingSheet({
     const noRoomsAvailable = !roomsData || !roomsData.length || roomsData[0]?.rooms.length === 0;
 
     return (
-        <Sheet>
-            <SheetTrigger>
-                {children}
-            </SheetTrigger>
+        <Page>
+
             <SheetContent side="bottom" className="max-w-4xl mx-auto h-[80vh] flex flex-col">
                 <SheetHeader className="flex-shrink-0">
                     <SheetTitle>{t("Book Your Stay")}</SheetTitle>
@@ -225,7 +224,7 @@ export default function BookingSheet({
                     </Button>
                 </div>
             </SheetContent>
-        </Sheet>
+        </Page>
     )
 }
 

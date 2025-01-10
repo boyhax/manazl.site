@@ -16,11 +16,7 @@ export interface Booking {
   cancel_reason?: string;
 }
 export interface NewBooking {
-  title?: string;
   variant_id: string;
-  listing_id?: string;
-  total_pay: number;
-  payment_id?: string;
   start_date: Date;
   end_date: Date;
 }

@@ -10,7 +10,6 @@
     "app",
     "www",
     "db",
-    "api",
     "ui"
   ],
   "keywords": [],

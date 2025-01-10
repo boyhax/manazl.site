@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { addDays } from "date-fns";
-import { useEffect } from "react";
 import supabase from "src/lib/supabase";
 
 async function getAvailableRooms(

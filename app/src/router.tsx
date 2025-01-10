@@ -35,6 +35,7 @@ import OnlineRequiredRoute from "./protectedRoutes/OnlineRequiredRoute";
 import HostRoute from "./pages/host/HostRoute";
 import PlayGround from "./pages/playground";
 import { ErrorMessage } from "./components/errorMessage";
+import AvailablePage from "./pages/availablePage";
 
 export const ErrorBoundary = () => {
   let error = useRouteError();
@@ -76,7 +77,18 @@ export const router = createBrowserRouter([
             path: "/",
             element: <Home />,
           },
-
+          {
+            path: "/reals-renting",
+            element: <Home />,
+          },
+          {
+            path: "/reals-sale",
+            element: <Home />,
+          },
+          {
+            path: "/lands-sale",
+            element: <Home />,
+          },
           {
             path: "/posts",
             element: <PostsPage />,
@@ -86,13 +98,12 @@ export const router = createBrowserRouter([
             element: <PageMakePost />,
             children: [],
           },
+          { path: '/listing/:id/available', element: <AvailablePage /> },
+
 
           {
             path: "/listing/:id",
             element: <ListingPage />,
-            children: [
-              { path: ':view' }
-            ],
             errorElement: <ErrorBoundary />,
           },
           {

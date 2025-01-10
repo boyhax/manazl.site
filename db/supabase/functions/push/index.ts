@@ -2,6 +2,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 import admin, { ServiceAccount } from 'npm:firebase-admin'
 import serviceAccount from '../service-account.json' with { type: 'json' }
 import { JWT } from 'https://esm.sh/google-auth-library@9.4.1'
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 interface Notification {
   id: string
@@ -27,7 +28,8 @@ admin.initializeApp({
   databaseURL:
     'https://mandubk-370d7-default-rtdb.asia-southeast1.firebasedatabase.app',
 })
-Deno.serve(async (req) => {
+
+serve(async (req) => {
   const payload: WebhookPayload = await req.json()
 
   const { data, error } = await supabase.auth.admin.getUserById(
@@ -69,17 +71,7 @@ Deno.serve(async (req) => {
       }),
     }
   )
-  // const res = await admin
-  //   .messaging()
-  //   .send(message)
-  //   .then((response) => {
-  //     console.log('Successfully sent notification: ', response)
-  //     return { message: 'success' }
-  //   })
-  //   .catch((error) => {
-  //     console.log('Error sending message: ', error)
-  //     return { message: 'notification send error' }
-  //   })
+
   return new Response(JSON.stringify(res), {
     headers: { 'Content-Type': 'application/json' },
   })

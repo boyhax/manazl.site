@@ -11,6 +11,7 @@ import {
   subMonths,
   isAfter,
   startOfDay,
+  isToday,
 } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
@@ -29,6 +30,7 @@ import {
 import { Toggle } from "@/components/ui/toggle";
 import { toast } from "@/hooks/use-toast";
 import { auth } from "src/state/auth";
+import { useCurrency } from "src/hooks/useCurrency";
 
 interface RoomAvailability {
   id: string;
@@ -52,7 +54,7 @@ export default function RoomAvailabilityCalendar({
   >(true);
   const { t } = useTranslate();
   const queryClient = useQueryClient();
-
+  const {converted,currency} = useCurrency()
   const fetchRoomAvailability = async (start: string, end: string) => {
     const { data, error } = await supabase
       .from("room_availability")
@@ -87,6 +89,11 @@ export default function RoomAvailabilityCalendar({
 
   const updateMutation = useMutation({
     mutationFn: async (updatedDays: RoomAvailability[]) => {
+      updatedDays = updatedDays.map(d => {
+        d.cost = converted(d.cost, currency, "$")
+        console.log(d.cost)
+        return d
+      })
       const update = await supabase
         .from("room_availability")
         .upsert(updatedDays.filter((d) => !!d.id));
@@ -154,26 +161,27 @@ export default function RoomAvailabilityCalendar({
   const handleNextMonth = () => setCurrentDate(addMonths(currentDate, 1));
 
   const handleDayClick = (day: Date, dayData: RoomAvailability | undefined) => {
-    if (!isAfter(startOfDay(day), startOfDay(new Date()))) return;
-
-    const isSelected = selectedDays.some((d) =>
-      isSameDay(new Date(d.date), day)
-    );
-    if (isSelected) {
-      setSelectedDays(
-        selectedDays.filter((d) => !isSameDay(new Date(d.date), day))
+    // Allow selecting today's date or future dates
+    if (isToday(day) || isAfter(startOfDay(day), startOfDay(new Date()))) {
+      const isSelected = selectedDays.some((d) =>
+        isSameDay(new Date(d.date), day)
       );
-    } else if (dayData) {
-      const { variants, ...cleanDayData } = dayData as any;
-      setSelectedDays([...selectedDays, cleanDayData]);
-    } else {
-      const newDay: any = {
-        room_id,
-        date: format(day, "yyyy-MM-dd"),
-        is_available: true,
-        cost: 0,
-      };
-      setSelectedDays([...selectedDays, newDay]);
+      if (isSelected) {
+        setSelectedDays(
+          selectedDays.filter((d) => !isSameDay(new Date(d.date), day))
+        );
+      } else if (dayData) {
+        const { variants, ...cleanDayData } = dayData as any;
+        setSelectedDays([...selectedDays, cleanDayData]);
+      } else {
+        const newDay: any = {
+          room_id,
+          date: format(day, "yyyy-MM-dd"),
+          is_available: true,
+          cost: 0,
+        };
+        setSelectedDays([...selectedDays, newDay]);
+      }
     }
   };
 
@@ -248,7 +256,7 @@ export default function RoomAvailabilityCalendar({
               const isSelected = selectedDays.some((d) =>
                 isSameDay(new Date(d.date), day)
               );
-              const isPastDay = !isAfter(
+              const isPastDay = !isToday(day) && !isAfter(
                 startOfDay(day),
                 startOfDay(new Date())
               );
@@ -260,8 +268,8 @@ export default function RoomAvailabilityCalendar({
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.2, delay: index * 0.01 }}
                   className={`px-2 py-1 w-10 h-10 rounded-lg ${isPastDay
-                    ? "cursor-not-allowed opacity-50"
-                    : "cursor-pointer"
+                      ? "cursor-not-allowed opacity-50"
+                      : "cursor-pointer"
                     } ${isSameMonth(day, currentDate)
                       ? isSelected
                         ? "bg-primary text-primary-foreground"
@@ -271,8 +279,9 @@ export default function RoomAvailabilityCalendar({
                             : "bg-[blue]"
                           : "bg-inherit border-2 border-border"
                       : "bg-gray-100"
-                    }`}
-                  onClick={() => !isPastDay && handleDayClick(day, dayData)}
+                    } ${isToday(day) ? "border-2 border-primary" : ""}`}
+                  
+                  onClick={() =>  handleDayClick(day, dayData)}
                 >
                   <div className="flex flex-col gap-[2px] justify-between items-center">
                     <span className="text-sm font-semibold">
@@ -280,7 +289,7 @@ export default function RoomAvailabilityCalendar({
                     </span>
                     {dayData && (
                       <span className="text-xs font-medium">
-                        ${dayData.cost}
+                        {currency}{converted(dayData.cost,"$")}
                       </span>
                     )}
                   </div>
@@ -310,16 +319,21 @@ export default function RoomAvailabilityCalendar({
               >
                 {t("Cost")}
               </label>
-              <Input
-                type="number"
-                id="bulkEditCost"
-                value={bulkEditCost}
-                onChange={(e) =>
-                  setBulkEditCost(e.target.value ? Number(e.target.value) : "")
-                }
-                className="mt-1"
-                placeholder={t("Leave blank to keep current values")}
-              />
+              <div className="flex gap-2 items-center">
+                {currency}
+
+                <Input
+                  type="number"
+                  id="bulkEditCost"
+                  value={bulkEditCost}
+                  onChange={(e) =>
+                    setBulkEditCost(e.target.value ? Number(e.target.value) : "")
+                  }
+                  className="mt-1"
+                  placeholder={t("Leave blank to keep current values")}
+                />
+              </div>
+              
             </div>
             <div>
               <label

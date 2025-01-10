@@ -6,13 +6,19 @@ export function useCurrency() {
   function setCurrency(value: "OMR" | "$") {
     store.setState({ currency: value });
   }
-  function converted(value: number, from = "$") {
-    if (from === "$") {
-      return currency === "$" ? value : Currency.UsdToOmr(value);
-    } else if (from === "OMR") {
-      return currency === "$" ? Currency.OmrToUsd(value) : value;
-    } else throw Error("bad from currency");
-  }
+ function converted(
+   value: number,
+   from: string = '$',
+   to: string = currency
+ ): number |string{
+   if (from === '$') {
+     return to === '$' ? value.toFixed(2) : Currency.UsdToOmr(value).toFixed(2)
+   } else if (from === 'OMR') {
+     return to === '$' ? Currency.OmrToUsd(value).toFixed(2) : value.toFixed(2)
+   } else {
+     throw new Error("Unsupported 'from' currency")
+   }
+ }
 
   return { currency, setCurrency, converted };
 }

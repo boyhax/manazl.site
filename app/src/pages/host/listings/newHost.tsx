@@ -26,8 +26,7 @@ const validationSchema = Yup.object().shape({
 
 
 export default function () {
-  const [step, setStep] = useState(1);
-  const [startloading, stoploading] = useIonLoading();
+
   const navigate = useNavigate();
   const [toast] = useIonToast();
   const { t } = useTranslate();
@@ -71,7 +70,7 @@ export default function () {
     initialValues: defaultValues,
     validationSchema,
     onSubmit,
-    validateOnChange: true,
+    validateOnChange: false,
   });
   return (
     <Page>

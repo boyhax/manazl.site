@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, Share2, Star } from "lucide-react";
+import { MapPin, MessageCircleIcon, Share2, Star } from "lucide-react";
 
 import { useTranslate } from "@tolgee/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Card from "src/components/Card";
 import LikeButton from "src/components/LikeButton";
 import { shareHundler } from "src/components/ShareLink";
@@ -11,6 +11,7 @@ import { Badge } from "src/components/ui/badge";
 import { Button } from "src/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "src/components/ui/card";
 import { useCurrency } from "src/hooks/useCurrency";
+import { getChatId } from "src/pages/chat/actions/chat.server";
 
 function get_cost(rooms) {
   let cost = null;
@@ -64,8 +65,11 @@ export default function ({
   const { t } = useTranslate();
   const { currency, converted } = useCurrency()
   const reviewsCount = reviews && reviews.length ? reviews[0].count : 0;
-
-
+  const goto = useNavigate()
+  const onchat = () => {
+    getChatId(id)
+      .then(({ id }) => { goto('/chat/' + id)})
+  }
   let cost = get_cost(rooms);
   return (
     <Card key={id} className="w-full max-w-md mx-auto overflow-hidden group">
@@ -130,19 +134,22 @@ export default function ({
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
           <div>
-            <p className="ms-2 text-sm font-medium line-clamp-1">
+            <Button className="" onClick={onchat} variant="outline">
+              <MessageCircleIcon />
+            </Button>
+            {/* <p className="ms-2 text-sm font-medium line-clamp-1">
               {user ? user.full_name : ""}
-            </p>
+            </p> */}
           </div>
         </div>
-        <Link to={"/listing/" + short_id}>
+        <Link to={"/listing/" + short_id + "/available"}>
           <Button
             variant="outline"
             size="sm"
             className="transition-transform hover:scale-105"
           >{cost ?
             <p>
-              {currency}{converted(cost)}{' '}
+              {currency}{Number(converted(cost)).toFixed(0)}{' '}
               {t("Book Now")} </p>
             : t("Check Availablity")}
           </Button>

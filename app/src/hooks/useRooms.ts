@@ -15,7 +15,6 @@ async function getAvailableRooms(
       p_end: end,
     })
     .select()
-
   error && console.log(error.message)
   return { data, error }
 }
@@ -27,6 +26,7 @@ export default function ({
   const { data, isLoading } = useQuery({
     queryKey: ['rooms', id, checkin.toDateString(), checkout.toDateString()],
     queryFn: getRooms,
+    gcTime: 100,
   })
   async function getRooms() {
     const { data, error } = await getAvailableRooms(id, checkin, checkout)

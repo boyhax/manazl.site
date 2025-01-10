@@ -11,3 +11,8 @@ create table
   ) tablespace pg_default;
 
 create unique index room_availability_unique_idx on public.room_availability using btree (room_id, date) tablespace pg_default;
+
+alter table
+  public.room_availability
+alter column
+  cost type decimal(10, 2) using cost :: decimal(10, 2);

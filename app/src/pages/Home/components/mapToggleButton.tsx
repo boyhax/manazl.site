@@ -13,7 +13,7 @@ export default function () {
   if (filter.map) return null;
   return (
     <div
-      className={`absolute md:hidden  bottom-20 flex justify-center items-center transition-all duration-500  ${visible ? "" : "translate-y-[500%] block opacity-0 scale-0"}`}
+      className={`absolute md:hidden  bottom-10 flex justify-center items-center transition-all duration-500  ${visible ? "" : "translate-y-[500%] block opacity-0 scale-0"}`}
     >
       <Button
         onClick={() =>
