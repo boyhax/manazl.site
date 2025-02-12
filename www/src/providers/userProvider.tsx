@@ -1,10 +1,15 @@
 "use client";
 import { createClient } from "@/app/lib/supabase/client";
-import { User } from "@supabase/supabase-js";
+import { User as supaUser } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { createContext, useState, useContext, useEffect } from "react";
 
-const UserContext = createContext<{ user: any }>({ user: null });
+type UserMetaData = {
+  full_name:string,avatar_url:string
+}
+export type User=supaUser & UserMetaData
+
+const UserContext = createContext<{ user: User|null }>({ user: null });
 
 export const useUserContext = () => {
   return useContext(UserContext);
@@ -20,7 +25,7 @@ export const UserProvider = ({ children }) => {
         router.push("/changepassword");
       }
       if (session) {
-        setUser({ ...session.user, ...session.user.user_metadata })
+        setUser({ ...session.user, ...session.user.user_metadata as UserMetaData })
 
       } else {
         setUser(null)

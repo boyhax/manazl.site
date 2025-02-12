@@ -5,29 +5,15 @@ import { addDays, differenceInDays } from "date-fns";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { Map, latLng } from "leaflet";
 import { motion, AnimatePresence } from "framer-motion";
-import { Share2, Users, Bed, Home } from "lucide-react";
+import { Share2 } from "lucide-react";
 import {
-  IonContent, IonSpinner,
-  useIonToast
+  IonContent
 } from "@ionic/react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Header from "@/components/Header";
@@ -38,9 +24,7 @@ import ImageCarousel from "@/components/imageCorousol";
 import ReviewsSection from "@/components/ReviewsSection";
 import CommentsSection from "@/components/CommentsSection";
 import { MapSetup } from "./Home/views/MapSearchView";
-import { create_booking } from "@/lib/db/bookings";
 import supabase from "@/lib/supabase";
-import { DatePickerWithRange } from "src/components/ui/dateRangePicker";
 import useRooms from "src/hooks/useRooms";
 import LoadingSpinnerComponent from "react-spinners-components";
 import { useQuery } from "@tanstack/react-query";
@@ -68,11 +52,7 @@ export default function ListingDetailPage() {
   const [view, setview] = useState('overview');
   const navigate = useNavigate();
   const { t } = useTranslate();
-  const [toast] = useIonToast();
-  const [bookingConfirming, setBookingConfirming] = useState(false);
-  const [room, setRoom] = useState<{ room_id, room_type, total_cost, }>();
   const [dateRange, setDateRange] = useState({ from: new Date(), to: addDays(new Date(), 1) });
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [params] = useSearchParams()
   const mapRef = useRef<Map>(null);
   const { data: listingData, isLoading, error } = useQuery({
@@ -101,7 +81,6 @@ export default function ListingDetailPage() {
     return !!dateRange['to'] ? dateRange.to : addDays(new Date(), 1)
 
   }
-  let variant = room ? listingData?.variants.find(r => r.id == room.room_id) : undefined;
 
   const numberOfNights =
     dateRange.from && dateRange.to
@@ -109,26 +88,7 @@ export default function ListingDetailPage() {
       : 0;
 
 
-  const confirmBooking = async () => {
-    setBookingConfirming(true);
-    try {
-      const { data, error } = await create_booking({
-        variant_id: room.room_id,
-        start_date: dateRange.from,
-        end_date: addDays(dateRange.to, -1),
-      });
-      if (error) throw Error(error.message)
-      navigate(`/account/bookings/${data.id}`);
-    } catch (error) {
-      toast({
-        message: t("Booking failed. Please try again."),
-        duration: 3000,
-      });
-      console.error("Booking error:", error);
-    } finally {
-      setBookingConfirming(false);
-    }
-  };
+
   function goAvailable() {
     navigate('available?' + params.toString())
   }
@@ -309,98 +269,7 @@ export default function ListingDetailPage() {
           </Tabs>
         </motion.div>
 
-        <Sheet open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-          <SheetContent side="bottom" className="max-w-md mx-auto">
-            <SheetHeader>
-              <SheetTitle>{t("Book Your Stay")}</SheetTitle>
-            </SheetHeader>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-4 mt-4"
-            >
-              <DatePickerWithRange date={dateRange} setDate={setDateRange} />
 
-              <Select
-                onValueChange={id => {
-                  setRoom(roomsData[0]?.rooms.find(r => r.room_id === id))
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("Select room type")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {roomsData ? roomsData[0]?.rooms.map((room, key) => {
-                    console.log('roomData :>> ', roomsData, room);
-                    return (
-                      <SelectItem key={key} value={room.room_id}>
-                        {room.title}  {room.room_type}  ${room.total_cost}/{t("nights") + " " + numberOfNights}
-                      </SelectItem>
-                    )
-                  }) : null}
-                </SelectContent>
-              </Select>
-
-
-              {room && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>{room.room_type}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span>{t("Guests")}</span>
-                        <span>
-                          {variant.guests}{" "}
-                          <Users className="inline h-4 w-4" />
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span>{t("Rooms")}</span>
-                        <span>
-                          {variant.rooms}{" "}
-                          <Home className="inline h-4 w-4" />
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span>{t("Beds")}</span>
-                        <span>
-                          {variant.beds}{" "}
-                          <Bed className="inline h-4 w-4" />
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>{t("Number of nights")}</span>
-                  <span>{numberOfNights}</span>
-                </div>
-                <div className="flex justify-between font-bold">
-                  <span>{t("Total cost")}</span>
-                  <span>${room ? room?.total_cost : null}</span>
-                </div>
-              </div>
-
-              <Button
-                className="w-full"
-                onClick={confirmBooking}
-                disabled={
-                  !room ||
-                  bookingConfirming
-                }
-              >
-                {bookingConfirming ? <IonSpinner /> : null}
-                {bookingConfirming ? t("Booking..") : t("Confirm Booking")}
-              </Button>
-            </motion.div>
-          </SheetContent>
-        </Sheet>
       </IonContent>
     </Page>
   );

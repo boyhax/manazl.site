@@ -18,6 +18,7 @@ import en from "src/lib/transulations/en.json";
 import LoadingSpinnerComponent from "react-spinners-components";
 import { Tolgee, DevTools, FormatSimple, BackendFetch, TolgeeProvider } from "@tolgee/react";
 import { UserProvider } from "@/providers/userProvider";
+import Header  from "@/components/layout/header";
 
 const tolgee = Tolgee()
   .use(DevTools())
@@ -59,9 +60,12 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.png" sizes="any" />
       </head>
       <body className={inter.className}>
+
         <QueryClientProvider client={queryClient}>
           <UserProvider>
             <TolgeeProvider tolgee={tolgee} fallback={< LoadingSpinnerComponent />}>
+              <Header />
+              <div className="h-24"></div>
               {children}
             </TolgeeProvider>
           </UserProvider>

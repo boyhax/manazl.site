@@ -16,24 +16,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { GoogleSignIn, SignIn } from "src/lib/db/auth";
+import { SignIn } from "src/lib/db/auth";
 import { useTranslate } from "@tolgee/react";
 import supabase from "src/lib/supabase";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { EyeOff, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MainContent } from "@/components/Page";
+import { EmailOTPSignInDialog } from "./EmailOTPSignInDialog";
+import GoogleOneTab from "@/app/login/googleOnTab";
+import GoogleLoginBtn from "./googleButton";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -56,9 +48,7 @@ const RegisterSchema = Yup.object().shape({
     .oneOf([Yup.ref("password"), undefined], "Passwords must match")
     .required("Confirm password is required"),
 });
-const PasswordResetSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
-});
+
 
 export default function AuthView() {
   const [activeTab, setActiveTab] = useState("login");
@@ -82,10 +72,11 @@ export default function AuthView() {
   }
   console.log('location.origin + `/login/callback` :>> ', location.origin + `/login/callback`);
   location.origin + `/login/callback`
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     // Handle Google login here
     setpending(true);
-    GoogleSignIn().finally(() => setpending(false));
+
+    const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'google' })
 
     console.log("Google login clicked");
   };
@@ -117,7 +108,7 @@ export default function AuthView() {
                   }
                   if (error) {
                     if (error.message.toLowerCase() == "email not confirmed") {
-                      navigate.push(`/emailconfirm#email=${values.email}`);
+                      navigate.push(`/login/confirm/${values.email}`);
                     }
                     console.log("error :>> ", error);
                     toast({ title: t(error.message), duration: 5000 });
@@ -182,15 +173,15 @@ export default function AuthView() {
                         ) : null}
                       </div>
                     </div>
-                    <PasswordResetDialogTrigger>
-                      <Label className={"text-sm "}>{t("Reset passord")}</Label>
-                    </PasswordResetDialogTrigger>
+                    <EmailOTPSignInDialog>
+                      <Label className={"text-sm "}>{t("Forgot Password? Sign in with OTP")}</Label>
+                    </EmailOTPSignInDialog>
                     <Button
                       className="w-full mt-4"
                       type="submit"
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? "Logging in..." : "Login"}
+                      {isSubmitting ? t("Logging in...") : t("Login")}
                     </Button>
                   </Form>
                 )}
@@ -201,7 +192,11 @@ export default function AuthView() {
                   {t("Or continue with")}
                 </span>
               </div>
-              <Button
+              <div className="w-full flex items-center justify-center flex-row">
+                <GoogleLoginBtn />
+              </div>
+             
+              {/* <Button
                 disabled={pending}
                 variant="outline"
                 className="w-full"
@@ -223,7 +218,7 @@ export default function AuthView() {
                   ></path>
                 </svg>
                 {t(" Sign in with Google")}
-              </Button>
+              </Button> */}
             </TabsContent>
             <TabsContent value="register">
               <Formik
@@ -258,7 +253,7 @@ export default function AuthView() {
                           duration: 5000
                         }
                         );
-                        navigate.push(`/emailconfirm#email=${values.email}`);
+                        navigate.push(`/login/confirm/${values.email}`);
                       } else {
                         toast({ title: t("Signed Up Successfully "), duration: 5000 });
                         navigate.push("/account");
@@ -386,66 +381,5 @@ export default function AuthView() {
         </CardFooter>
       </Card>
     </MainContent>
-  );
-}
-
-export function PasswordResetDialogTrigger({ children }: any) {
-  const { toast } = useToast();
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <Formik
-          initialValues={{ email: "" }}
-          validationSchema={PasswordResetSchema}
-          onSubmit={async (values, { setSubmitting }) => {
-            setSubmitting(true);
-            const { error } = await supabase.auth.resetPasswordForEmail(
-              values.email
-            );
-            toast({
-              title: error ? "Not Send error " + error.message : "Reset email Send ",
-              duration: 1000
-            }
-            );
-            setSubmitting(false);
-          }}
-        >
-          {({ errors, touched, isSubmitting }) => (
-            <Form>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="login-email">Email</Label>
-                  <Field name="email">
-                    {({ field }: any) => (
-                      <Input
-                        id="login-email"
-                        placeholder="Enter your email"
-                        type="email"
-                        {...field}
-                      />
-                    )}
-                  </Field>
-                  {errors.email && touched.email ? (
-                    <div className="text-red-500 text-sm">{errors.email}</div>
-                  ) : null}
-                </div>
-              </div>
-              <div className={"h-12"}> </div>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction type="submit">Continue</AlertDialogAction>
-              </AlertDialogFooter>
-            </Form>
-          )}
-        </Formik>
-      </AlertDialogContent>
-    </AlertDialog>
   );
 }

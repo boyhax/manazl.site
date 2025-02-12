@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and api routes
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://www.manazl.com/sitemap.xml
+
+# Crawl-delay to be nice to search engines
+Crawl-delay: 10

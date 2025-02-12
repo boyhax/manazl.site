@@ -3,6 +3,7 @@ import { MainContent } from "src/components/Page";
 import ListingForm from "../components/listingForm";
 import { } from "@tolgee/react";
 import { createClient } from "@/app/lib/supabase/server";
+import { Card } from "@/components/ui/card";
 
 async function getUserListing() {
   const client = createClient()
@@ -17,7 +18,9 @@ export default async function UpdateListingPage() {
 
   return (
     <MainContent className={" w-full "}>
-      <ListingForm initialValues={values} />
+     
+        <ListingForm initialValues={values} />
+     
     </MainContent>
 
   );

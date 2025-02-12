@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useCallback, useEffect } from 'react'
 import { useTranslate } from '@tolgee/react'
 import { Loader2, Mail } from 'lucide-react'
@@ -17,25 +18,17 @@ import { Label } from '@/components/ui/label'
 import supabase from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
-export default function EmailConfirmView() {
+export default function EmailConfirmView({email}) {
   const router = useRouter()
   const { t } = useTranslate()
   const { toast } = useToast()
-  const [email, setEmail] = useState('')
+
   const [otp, setOtp] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const [isResending, setIsResending] = useState(false)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.hash.slice(1))
-    const emailParam = params.get('email')
-    if (!emailParam) {
-      router.push('/')
-    } else {
-      setEmail(emailParam)
-    }
-  }, [])
+  
 
   const verifyOTP = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
@@ -72,6 +65,7 @@ export default function EmailConfirmView() {
   const resendOTP = useCallback(async () => {
     setIsResending(true)
     try {
+     
       const { error } = await supabase.auth.resend({
         email,
         type: 'signup',

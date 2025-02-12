@@ -8,7 +8,6 @@ import useSearchfilter from "src/hooks/useSearchFilter";
 import { listingfilter } from "src/lib/db/listings";
 import { getListings } from "@/lib/search";
 import InfiniteScroll from "./infinteScroll";
-import { format } from "date-fns";
 
 let limit = 10;
 
@@ -50,8 +49,8 @@ export default function ListingList() {
 
     return (
 
-        <ScrollArea className="overflow-auto h-[75vh]">
-            {isLoading ? <LoadingSpinnerComponent type={'Ball'} color={'red'} size={'100px'} /> : null}
+        <ScrollArea className="overflow-auto h-[75vh] px-4  ">
+            {isLoading ? <LoadingSpinnerComponent type={'Infinity'} color={'red'} size={'10rem'} /> : null}
             {!isLoading && data?.pages[0].length == 0 && (
                 <div className={"w-full px-5  text-center "}>
                     <EmptyMessage message={"No Result Found"} />

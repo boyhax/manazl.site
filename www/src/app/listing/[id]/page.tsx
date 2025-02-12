@@ -154,9 +154,7 @@ export default function ListingPage() {
                     className="flex justify-between items-center mb-2 bg-background "
                 >
                     <HeaderBackButton />
-                    {/* <Button onClick={hundleshare} variant={'ghost'} className="hover:text-blue-600 flex space-x-2">
-                        <Share />
-                    </Button> */}
+                   
                     <Button
                         onClick={handlelike}
                         variant="ghost"
@@ -182,11 +180,11 @@ export default function ListingPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3, duration: 0.3 }}
                         >
-                            <BookingSheet id={listingData.id}>
+                            <Link href={`/listing/${id}/available`}>
                                 <Button>
                                     {t("Select Room")}
                                 </Button>
-                            </BookingSheet>
+                            </Link>
                             <Link href={`/account/chat/redirect/${listingData?.id}`}>
                                 <Button variant="outline">{t("Contact Host")}</Button>
                             </Link>

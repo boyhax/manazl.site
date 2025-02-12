@@ -1,18 +1,15 @@
-'use client'
 
+"use client"
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Users, Home, Bed, Check } from 'lucide-react'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-import { createClient } from '@/app/lib/supabase/client'
 import { create_booking } from '@/lib/db/bookings'
-import { addDays, differenceInDays } from 'date-fns'
-import useRooms from '@/hooks/useRooms'
-import { useRouter } from 'next/navigation'
+import { addDays, differenceInDays, format } from 'date-fns'
+
 import { useTranslate } from '@tolgee/react'
 import { useToast } from '@/hooks/use-toast'
 import { DatePickerWithRange } from '@/components/ui/dateRangePicker'
@@ -21,63 +18,96 @@ import useSearchfilter from '@/hooks/useSearchFilter'
 import LoadingSpinnerComponent from 'react-spinners-components'
 import { useQuery } from '@tanstack/react-query'
 import { ToastAction } from '@/components/ui/toast'
-import Page from '@/components/Page'
+import Page, { Header, HeaderBackButton, HeaderTitle, MainContent } from '@/components/Page'
+import supabase from 'src/lib/supabase'
 
-const getdata = (id) => async () => {
-    const supabase = createClient();
+import { Label } from 'src/components/ui/label'
+import { useParams, useRouter } from 'next/navigation'
+import { DateRangePickerwithouttrigger } from '@/components/dateRangePickerwithouttrigger'
 
-    const { data, error } = await supabase
-        .from("variants")
-        .select(
-            "beds,rooms,guests"
-        )
-        .eq("id", id)
-        .single()
+type Room = {
+    id: number | string;
+    created_at: string;
+    listing_id: number;
+    thumbnail: string;
+    title: string;
+    active: boolean;
+    short_id: string;
+    beds: number;
+    guests: number;
+    rooms: number;
+    description: string;
+    type: string;
+    aval: {
+        id: number;
+        cost: number;
+        date: string;
+        room_id: number;
+        created_at: string;
+        is_available: boolean;
+    }[];
+    listings: {
+        short_id: string;
+    };
+};
 
-    if (error) throw Error(error.message)
-    return data
-}
 
-export default function BookingSheet({
-    children, id
-}) {
+export default function BookingSheet() {
+    const { id } = useParams()
     const navigate = useRouter();
     const { t } = useTranslate();
     const { toast } = useToast();
-    const router = useRouter()
     const [bookingConfirming, setBookingConfirming] = useState(false);
-    const [room, setRoom] = useState<{ room_id, room_type, total_cost, }>();
+    const [selectedRoom, setSelectedRoom] = useState<Room>();
     const { filter } = useSearchfilter<any>();
     const checkin = filter.checkin ? new Date(filter.checkin) : new Date();
-    const checkout = filter.checkout ? new Date(filter.checkout) : addDays(new Date(), 1);
+    const checkout = filter.checkout ? new Date(filter.checkout) : addDays(checkin ? checkin : new Date(), 1);
+    const days_count = differenceInDays(checkout, checkin);
     const [dateRange, setDateRange] = useState({ from: checkin, to: checkout });
     const { converted, currency } = useCurrency();
+    const getrooms = async () => {
+        function get_date(date) {
+            return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+        }
+
+        const { data, error } = await supabase
+            .from("variants")
+            .select('*,aval:room_availability!inner(*),listings!inner(short_id)')
+            .eq("listings.short_id", id)
+            .gte("aval.date", get_date(dateRange.from))
+            .lt("aval.date", get_date(dateRange.to))
+
+        if (error) throw Error(error.message)
+        return data as Room[]
+    }
     useEffect(() => {
-        setRoom(undefined)
+        setSelectedRoom(undefined)
     }, [dateRange]);
 
-    const { data: roomsData, isLoading: isLoadingRooms } = useRooms({
-        id,
-        checkin: dateRange?.from ?? undefined,
-        checkout: dateRange?.to ?? undefined
+
+
+    const { data: rooms, isLoading: isLoadingRooms } = useQuery({
+        queryKey: ['rooms', id, dateRange],
+        queryFn: getrooms
+    })
+    const get_cost = (room: Room) => room.aval.reduce((previousValue, currentValue, currentIndex, array) => { return previousValue + currentValue.cost }, 0)
+    const isRoomAval = (room: Room) => room.aval.length == days_count
+    const aval = [];
+    rooms?.forEach((room) => {
+        aval[room.id] = { aval: room.aval.length == days_count, cost: get_cost(room) }
     })
 
-    const { data: variant } = useQuery({
-        queryKey: ['variant', room],
-        queryFn: getdata(id)
-    })
-    const numberOfNights =
-        dateRange?.from && dateRange?.to
-            ? differenceInDays(dateRange.to, dateRange.from)
-            : 0;
+
+    console.log(rooms)
+
+
 
     const confirmBooking = async () => {
         setBookingConfirming(true);
-        if (!room) {
+        if (!selectedRoom) {
             toast({ title: 'Select Room' })
             return
         }
-        const supabase = createClient();
         const {
             data: { user },
         } = await supabase.auth.getUser();
@@ -85,7 +115,7 @@ export default function BookingSheet({
             toast({
                 title: "please Sign in First",
                 action: (<ToastAction
-                    onClick={() => router.push('/login?next=' + window.location.href)}
+                    onClick={() => navigate.push('/login?next=' + window.location.href)}
                     altText="Goto Sign in ">Sign In</ToastAction>
                 )
             })
@@ -94,7 +124,7 @@ export default function BookingSheet({
         try {
             const { data, error } = await create_booking({
 
-                variant_id: room.room_id,
+                variant_id: selectedRoom.id as string,
                 start_date: dateRange.from,
                 end_date: dateRange.to,
 
@@ -113,23 +143,35 @@ export default function BookingSheet({
         }
     };
 
-    const noRoomsAvailable = !roomsData || !roomsData.length || roomsData[0]?.rooms.length === 0;
+    const noRoomsAvailable = !rooms || !rooms.length;
 
     return (
         <Page>
+            <Header>
+              
+                <HeaderTitle>
+                    {t("Book Your Stay")}
+                </HeaderTitle>
+                <div className="flex flex-col ms-auto">
+                    <DateRangePickerwithouttrigger date={dateRange} setDate={setDateRange}>
+                        <Label className="flex flex-col ms-auto">
+                            <p>{format(dateRange.from, 'MMM dd')}</p>
+                            {!dateRange.to?null:<p>{format(dateRange.to, 'MMM dd')}</p>}
+                        </Label>
+                    </DateRangePickerwithouttrigger>
+                </div>
 
-            <SheetContent side="bottom" className="max-w-4xl mx-auto h-[80vh] flex flex-col">
-                <SheetHeader className="flex-shrink-0">
-                    <SheetTitle>{t("Book Your Stay")}</SheetTitle>
-                </SheetHeader>
-                <ScrollArea className="flex-grow overflow-y-auto">
+
+            </Header>
+            <MainContent className="max-w-4xl mx-auto mt-2 flex flex-col">
+                
+                <ScrollArea className="flex-grow overflow-y-auto justify-center items-center ">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="space-y-4 p-4"
+                        className="space-y-4   "
                     >
-                        <DatePickerWithRange date={dateRange} setDate={setDateRange} />
                         {isLoadingRooms ? (
                             <Card>
                                 <CardContent className="pt-6">
@@ -145,85 +187,78 @@ export default function BookingSheet({
                                     <p className="text-center text-muted-foreground">
                                         {t("No rooms available for the selected dates. Please choose different dates.")}
                                     </p>
+                                    <DatePickerWithRange date={dateRange} setDate={setDateRange} />
+
                                 </CardContent>
                             </Card>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {roomsData && roomsData[0]?.rooms.map((roomOption, index) => (
+                            <div className="flex flex-col gap-4 ">
+                                {rooms.map((room, index) => (
                                     <Card
                                         key={index}
-                                        className={`cursor-pointer transition-all ${room?.room_id === roomOption.room_id ? 'ring-2 ring-primary' : 'hover:shadow-md'}`}
-                                        onClick={() => setRoom(roomOption)}
+                                        className={`cursor-pointer transition-all w-full ${room?.id === selectedRoom?.id ? 'border-2 border-primary' : 'hover:shadow-md'}`}
+                                        onClick={() => setSelectedRoom(room)}
                                     >
                                         <CardHeader>
                                             <CardTitle className="flex justify-between items-center">
-                                                <span>{roomOption.title}</span>
-                                                {room?.room_id === roomOption.room_id && (
+                                                <span>{room.title}</span>
+                                                {selectedRoom?.id === room.id && (
                                                     <Check className="text-primary" />
                                                 )}
                                             </CardTitle>
                                         </CardHeader>
                                         <CardContent>
-                                            <p className="font-semibold mb-2">{roomOption.room_type}</p>
+                                            <p className="font-semibold mb-2">{room.type}</p>
                                             <div className="space-y-2 text-sm">
                                                 <div className="flex justify-between items-center">
                                                     <span>{t("Guests")}</span>
                                                     <span>
-                                                        {variant?.guests}{" "}
+                                                        {/* {variant?.guests}{" "} */}
                                                         <Users className="inline h-4 w-4" />
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <span>{t("Rooms")}</span>
                                                     <span>
-                                                        {variant?.rooms}{" "}
+                                                        {/* {variant?.rooms}{" "} */}
                                                         <Home className="inline h-4 w-4" />
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <span>{t("Beds")}</span>
                                                     <span>
-                                                        {variant?.beds}{" "}
+                                                        {/* {variant?.beds}{" "} */}
                                                         <Bed className="inline h-4 w-4" />
                                                     </span>
                                                 </div>
                                             </div>
                                         </CardContent>
                                         <CardFooter>
-                                            <p className="text-right w-full font-bold">
-                                                {currency}{converted(roomOption.total_cost, '$')}/{t("nights") + " " + numberOfNights}
-                                            </p>
+                                            {isRoomAval(room) ? <p className="text-right w-full font-bold">
+                                                {currency}{converted(get_cost(room), '$')}
+                                            </p> : <p>{t("Not Available")}</p>}
                                         </CardFooter>
                                     </Card>
                                 ))}
+                                    
+                                    
                             </div>
                         )}
 
-                        {room && (
-                            <div className="space-y-2 p-4 bg-muted rounded-lg">
-                                <div className="flex justify-between">
-                                    <span>{t("Number of nights")}</span>
-                                    <span>{numberOfNights}</span>
-                                </div>
-                                <div className="flex justify-between font-bold">
-                                    <span>{t("Total cost")}</span>
-                                    <span>{currency}{converted(room.total_cost, '$')}</span>
-                                </div>
-                            </div>
-                        )}
+
                     </motion.div>
                 </ScrollArea>
-                <div className="flex-shrink-0 p-4 bg-background">
+                <div className="flex-shrink-0 p-4 bg-background pb-16">
                     <Button
                         className="w-full"
                         onClick={confirmBooking}
-                        disabled={!room || bookingConfirming || noRoomsAvailable}
+                        disabled={!selectedRoom || bookingConfirming || noRoomsAvailable}
                     >
                         {bookingConfirming ? <LoadingSpinnerComponent /> : null}
-                        {bookingConfirming ? t("Booking..") : t("Confirm Booking")}
+                        {bookingConfirming ? t("Sending..") : t("Send Request")}
                     </Button>
                 </div>
-            </SheetContent>
+            </MainContent>
         </Page>
     )
 }

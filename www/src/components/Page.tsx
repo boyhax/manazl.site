@@ -25,6 +25,7 @@ interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export function Header({ children, className, ...props }: HeaderProps) {
+    
   return (
     <div
       className={cn("sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}
@@ -97,7 +98,7 @@ export function Footer({ children, className, ...props }: FooterProps) {
 export function MainContent({ children, className, ...props }: React.HTMLAttributes<HTMLElement>) {
   return (
     <div className={cn("flex-1", className)} {...props}>
-      <div className="container py-6">
+      <div className="container">
         <ScrollArea>
           {children}
         </ScrollArea>

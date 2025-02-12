@@ -33,7 +33,7 @@ export default function GooglePlacesAutoComplete({
 
   useEffect(() => {
     if (!!inputref.current && isLoaded) {
-      let service = new window.google.maps.places.Autocomplete(inputref.current)
+      let service = new (window as any).google.maps.places.Autocomplete(inputref.current)
       options && service.setOptions(options)
       setautocomplete(service);
 

@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Trash2, Upload, Image as ImageIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { deletefile, uploadfile } from "src/lib/db/storage";
+import { deletefile } from "src/lib/db/storage";
 import { Button } from "./ui/button";
 import {
   CardContent,
@@ -61,7 +61,7 @@ export default function UserImageGallary({ onChange, selected, path }: GallaryPr
           </div>
         ) : (
           <ScrollArea className="h-72 mt-4 rounded-md border">
-            <div className="p-4 grid grid-cols-2 gap-4"
+            <div className="p-4 grid grid-cols-3 gap-4"
               {...getRootProps()}
             >
               <input {...getInputProps()} />
@@ -88,7 +88,7 @@ export default function UserImageGallary({ onChange, selected, path }: GallaryPr
                       className="relative group aspect-square"
                     >
                       <Image
-                        width={300} height={200}
+                        width={190} height={190}
                         src={publicPath(path)}
                         alt={path}
                         className="w-full h-full object-cover rounded-lg"
@@ -219,3 +219,36 @@ function isImagePath(path: string): boolean {
   const imageExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|tiff)$/i;
   return imageExtensions.test(path);
 }
+ const uploadfile = async (
+  bucket: string,
+  File: string | Blob | File,
+  path: string,
+  contentType: string
+) => {
+  try {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if(!user )throw Error('user not found')
+    let _path = path.replace('userid',user.id)
+    const { error, data } = await supabase.storage
+      .from(bucket)
+      .upload(_path, File, {
+        cacheControl: "3600",
+        upsert: true,
+        contentType,
+      });
+    if (error) {
+      console.trace("error :>> ", error);
+      return { url: null, error: { message: "failed at upload" }, path: null };
+    }
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from(bucket).getPublicUrl(data.path);
+    return { url: publicUrl, error: null, path: path as string };
+  } catch (error) {
+    console.trace(error);
+    return { url: null, error: { message: "failed at upload" }, path: null };
+  }
+};

@@ -29,7 +29,7 @@ export default function ChatPage(): JSX.Element {
     const { id } = useParams()
     const [messages, setMessages] = useState<Message[]>([])
     const [chat, setChat] = useState<Chat>()
-    const { user } = useUserContext()
+    const { user } = useUserContext() as any
 
     useEffect(() => {
         scrollToBottom()
@@ -86,7 +86,8 @@ export default function ChatPage(): JSX.Element {
     }
 
     return (
-        <div className="flex flex-col h-[90vh] relative overflow-clip ">
+        <div className="flex flex-col h-[70vh] relative overflow-clip rounded-xl border bg-card text-card-foreground shadow 
+             max-w-sm w-full transition-all duration-300 ease-in-out overflow-y-clip">
             <HeaderBackButton />
             <ScrollArea className="pb-16 ">
                 <div className="  p-4 flex flex-col space-y-4  ">

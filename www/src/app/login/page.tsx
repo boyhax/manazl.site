@@ -15,10 +15,8 @@ export default async function AuthPage() {
 
   return (
     <Page>
-      <Header>
-        <HeaderBackButton to="/" />
-      </Header>
-      <MainContent className={"w-full items-center justify-center"}>
+
+      <MainContent className={"w-full items-center justify-center py-2"}>
         <AuthView />
       </MainContent>
     </Page>

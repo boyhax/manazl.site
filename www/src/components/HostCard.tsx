@@ -70,7 +70,7 @@ export default function HostCard({
   const { converted, currency } = useCurrency()
   let cost = get_cost(rooms);
   const params = useSearchParams()
-  const { user: me } = useUserContext()
+  const { user: me } = useUserContext() as any;
 
   async function handlelike() {
     let client = createClient()
@@ -142,7 +142,7 @@ export default function HostCard({
         </div>
 
       </CardHeader>
-      <Link href={`/listing/${short_id}/?${params.toString()}`}>
+      <Link prefetch={false} href={`/listing/${short_id}/?${params.toString()}`}>
         <CardContent className="p-4">
           <div className="flex justify-between items-start mb-2">
             <h3 className="text-xl font-semibold line-clamp-1">{title}</h3>
@@ -176,7 +176,7 @@ export default function HostCard({
             </p>
           </div>
         </div>
-        <Link href={`/listing/${short_id}/?${params.toString()}`}>
+        <Link prefetch={false} href={`/listing/${short_id}/available/?${params.toString()}`}>
           <Button
             variant="outline"
             size="sm"
@@ -184,7 +184,7 @@ export default function HostCard({
           >
             {cost ? (
               <p className="">
-                {currency}{converted(cost)}
+                {currency}{converted(cost)}{ " "+t("book")}
               </p>
             ) : t("Check Availablity")}
           </Button>

@@ -66,7 +66,7 @@ export default function DbSearch({
   placeholder = "Search for a place...",
   className,
   options,
-}: PlacesAutocompleteProps) {
+}: PlacesAutocompleteProps ) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 

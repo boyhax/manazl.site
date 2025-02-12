@@ -14,11 +14,14 @@ import { Label } from "@/components/ui/label"
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
 import useProfile from "src/hooks/useProfile"
-import { getuserid } from "src/lib/db/auth"
+import { getuserid, SignOut } from "src/lib/db/auth"
 import supabase from "src/lib/supabase"
 import { useToast } from "@/hooks/use-toast"
 import { useUserContext } from "@/providers/userProvider"
 import { format } from "date-fns"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import ChangePasswordCard from "../login/ChangePasswordCard"
+import { useRouter } from "next/navigation"
 
 
 async function accountLoader() {
@@ -51,7 +54,7 @@ export default function AccountPage() {
   const { updateAvatar, updateProfile, loading } = useProfile()
   const { toast } = useToast()
   const { t } = useTranslate()
-
+  const router = useRouter()
   const handleAvatarUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -70,8 +73,6 @@ export default function AccountPage() {
   if (isLoading || !user) return <LoadingSpinnerComponent type="Ball" />
 
 
-
-
   return (
 
     <div className="flex-1 space-y-6">
@@ -86,10 +87,16 @@ export default function AccountPage() {
             </Avatar>
             <div>
               <CardTitle className="text-2xl">{user?.full_name!}</CardTitle>
-              {<CardDescription>
+              <CardDescription>
+                {user.email||user.phone||""}
+              </CardDescription>
+              <CardDescription>
                 {t("Joined")} {user?.created_at ? format(new Date(user?.created_at), "MMMM yyyy") : null}
-              </CardDescription>}
+              </CardDescription>
+
             </div>
+            <Button variant="outline" onClick={() => { SignOut(); router.push('/') }}>{user ? "Sign Out" : "Sign in"}</Button>
+
           </div>
           <Sheet>
             <SheetTrigger asChild>
@@ -114,6 +121,16 @@ export default function AccountPage() {
                     maxLength={20}
                     onChange={(e) => setName(e.target.value.slice(0, 20))}
                   />
+                </div>
+                <div className="space-y-2">
+                  <Dialog>
+                    <DialogTrigger>
+                      <Button variant={'outline'}>{t("change password")}</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <ChangePasswordCard />
+                    </DialogContent>
+                  </Dialog>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="avatar">{t("Avatar")}</Label>
@@ -192,9 +209,9 @@ export default function AccountPage() {
               <div className="flex items-center space-x-4 bg-purple-50 dark:bg-purple-900 p-4 rounded-lg">
                 <User className="h-8 w-8 text-purple-500" />
                 <div>
-                  <p className="font-semibold">
-                    {data?.listings[0].count > 0 ? t("Host") : t("Guest")}
-                  </p>
+                  {<p className="font-semibold">
+                    {data?.listings.length && data?.listings[0].count > 0 ? t("Host") : t("Guest")}
+                  </p>}
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {t("Account Type")}
                   </p>

@@ -16,9 +16,11 @@ const ListingForm = dynamic(
 export default async function NewHost() {
 
   return (
-    <ScrollArea className={"  "}>
+    <ScrollArea >
       <Suspense fallback={<LoadingSpinnerComponent></LoadingSpinnerComponent>}>
+
         <ListingForm initialValues={defaultValues} />
+
       </Suspense>
     </ScrollArea>
   );

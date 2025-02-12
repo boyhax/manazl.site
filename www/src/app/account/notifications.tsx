@@ -13,8 +13,7 @@ import supabase from "src/lib/supabase";
 interface MyListingsProps { }
 
 const NotificationsView: FunctionComponent<MyListingsProps> = () => {
-  const { user } = useUserContext();
-
+  const { user } = useUserContext() as any;
   const { t } = useTranslate();
 
   const { data, error, loading } = useSupabaseQuery(

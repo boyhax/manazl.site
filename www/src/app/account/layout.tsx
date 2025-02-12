@@ -1,16 +1,15 @@
 'use client'
 
-import { Calendar, Home, Menu, User, MessageCircle } from "lucide-react"
+import { Calendar, Home, Menu, User, MessageCircle, Hotel } from "lucide-react"
 import { Suspense, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
-import Page, { MainContent } from "src/components/Page"
-import { useTranslate } from "@tolgee/react"
 import { usePathname, useRouter } from "next/navigation"
 import LoadingSpinnerComponent from "react-spinners-components"
+import TT from "@/components/TT"
 
 
 
@@ -21,20 +20,21 @@ export default function AccountLayout({ children }) {
     const pathname = usePathname()
 
     const menuItems = [
-        { icon: Home, label: t("Overview"), value: "/account" },
+        { icon: Home, label: t("Home"), value: "/" },
+        { icon: User, label: t("Overview"), value: "/account" },
         { icon: Calendar, label: t("Reservations"), value: "/account/reservations" },
-        { icon: User, label: t("My Host"), value: "/account/myhost" },
+        { icon: Hotel, label: t("Manage Host"), value: "/account/myhost" },
         { icon: MessageCircle, label: t("Chats"), value: "/account/chat" },
     ]
     return (
 
-        <div className="w-full h-full">
-            <div className="min-h-screen  bg-gray-100 dark:bg-gray-900">
+        <div className="w-full  h-full grow  overflow-hidden">
+            <div className="  bg-gray-100 dark:bg-gray-900">
                 <div className="container mx-auto p-4 space-y-6">
                     {/* Mobile Menu Button */}
                     <Button variant="outline" className="md:hidden mb-4" onClick={() => setIsMenuOpen(true)}>
                         <Menu className="h-4 w-4 mr-2" />
-                        {"Menu"}
+                        {TT("Menu")}
                     </Button>
 
                     <div className="flex flex-col md:flex-row gap-4 h-full">
@@ -87,7 +87,7 @@ export default function AccountLayout({ children }) {
                         </Sheet>
 
                         {/* Main Content */}
-                        <main className=" max-h-[90vh]  overflow-auto w-full ">
+                        <main className=" w-full ">
                             <Suspense fallback={<LoadingSpinnerComponent />}>
                                 {children}
                             </Suspense>

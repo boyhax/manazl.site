@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import useSearchfilter from "src/hooks/useSearchFilter";
 import MapToggleButton from "./components/mapToggleButton";
 import MapSearchView from "./views/MapSearchView";
-import ListingsList from "./views/listingsList";
 import { useMediaQuery } from "usehooks-ts";
 import { listingfilter } from "src/lib/db/listings";
 import Dbsearch from "src/components/dbsearch";
@@ -53,7 +52,7 @@ export default function () {
                 });
               }}
             />
-           
+
           </div>
 
         </div>
@@ -70,7 +69,7 @@ export default function () {
             <MapSearchView />
           </div>
         ) : null}
-        <ListingsList />
+        <h1>reals sale</h1>
       </div>
 
       <div

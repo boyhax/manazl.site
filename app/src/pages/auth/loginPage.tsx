@@ -14,9 +14,6 @@ export default function () {
 
   return (
     <Page>
-      <Header>
-        <HeaderBackButton />
-      </Header>
       <div className={"w-full h-full flex justify-center items-center"}>
         <AuthView />
       </div>
