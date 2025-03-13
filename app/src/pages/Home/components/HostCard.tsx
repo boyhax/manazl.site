@@ -6,28 +6,23 @@ import { Link, useNavigate } from "react-router-dom";
 import Card from "src/components/Card";
 import LikeButton from "src/components/LikeButton";
 import { shareHundler } from "src/components/ShareLink";
-import ImageCorousol from "src/components/imageCorousol";
 import { Badge } from "src/components/ui/badge";
 import { Button } from "src/components/ui/button";
-import { CardContent, CardFooter, CardHeader } from "src/components/ui/card";
 import { useCurrency } from "src/hooks/useCurrency";
 import { getChatId } from "src/pages/chat/actions/chat.server";
 
 function get_cost(rooms) {
   let cost = null;
-  rooms.forEach((room, index, array) => {
-    room.available.forEach((available, index, array) => {
+  rooms.forEach((room) => {
+    room.available.forEach((available) => {
       if (!cost || available.cost < cost) {
         cost = available.cost
       }
     })
-
-
   })
-
   return cost
-
 }
+
 type Props = {
   short_id;
   id;
@@ -43,6 +38,7 @@ type Props = {
   reviews;
   address;
 };
+
 export default function ({
   data: {
     rooms,
@@ -63,98 +59,100 @@ export default function ({
 }) {
   const isLiked = likes && likes.length ? likes[0].count : false;
   const { t } = useTranslate();
-  const { currency, converted } = useCurrency()
+  const { currency, converted } = useCurrency();
   const reviewsCount = reviews && reviews.length ? reviews[0].count : 0;
-  const goto = useNavigate()
+  const goto = useNavigate();
   const onchat = () => {
-    getChatId(id)
-      .then(({ id }) => { goto('/chat/' + id)})
+    getChatId(id).then(({ id }) => { goto('/chat/' + id)});
   }
   let cost = get_cost(rooms);
+  
   return (
-    <Card key={id} className="w-full max-w-md mx-auto overflow-hidden group">
-      <CardHeader className="p-0 relative">
-        <ImageCorousol images={images || []} />
-        <LikeButton
-          id={id}
-          isliked={isLiked}
-          className="absolute top-2 right-2 text-white hover:bg-white/20"
-        />
-
-        <Button
-          onClick={shareHundler({
-            text: "Find Your Next Amazing Travel Places Here check here",
-            url: `/listing/${id}`,
-          })}
-          variant="ghost"
-          size="icon"
-          className="absolute top-2 right-12 text-white hover:bg-white/20"
-        >
-          <Share2 className="h-6 w-6" />
-        </Button>
-
-        <div className="absolute top-2 left-2">
-          {featured ? (
-            <Badge
-              variant="secondary"
-              className="bg-primary text-primary-foreground"
-            >
-              Featured
-            </Badge>
-          ) : null}
-        </div>
-
-      </CardHeader>
-      <Link to={"/listing/" + short_id}>
-        <CardContent className="p-4">
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="text-xl font-semibold line-clamp-1">{title}</h3>
-            <div className="flex items-center">
-              <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-              <span dir="ltr" className="ml-1 text-sm font-medium">
-                {(rating / 20).toFixed(2).toString()}({reviewsCount})
-              </span>
-            </div>
+    <Card key={id} className="w-full mx-auto overflow-hidden group">
+      <div className="flex flex-row">
+        {/* Content Side */}
+        <div className="flex-1 p-3">
+          <div className="flex gap-2 items-center mb-2">
+            <Link to={"/listing/" + short_id} className="flex-1">
+              <h3 className="text-base font-semibold line-clamp-1">{title}</h3>
+            </Link>
+            {featured && (
+              <Badge variant="secondary" className="bg-primary text-primary-foreground text-xs">
+                Featured
+              </Badge>
+            )}
           </div>
-          <div className="flex items-center text-sm text-muted-foreground mb-2">
-            <MapPin className="h-4 w-4 mr-1" />
-            <span>
+          
+          <div className="flex items-center text-xs text-muted-foreground mb-2">
+            <MapPin className="h-3 w-3 mr-1" />
+            <span className="line-clamp-1">
               {address?.city}, {address?.state}
             </span>
           </div>
-          <p className="text-muted-foreground text-sm line-clamp-2">
+          
+          <div className="flex items-center text-xs mb-2">
+            <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
+            <span dir="ltr" className="ml-1 font-medium">
+              {(rating / 20).toFixed(1)}({reviewsCount})
+            </span>
+          </div>
+          
+          <p className="text-muted-foreground text-xs line-clamp-2 mb-2">
             {description}
           </p>
-        </CardContent>
-      </Link>
-      <CardFooter className="p-4 pt-0 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Avatar className="h-8 w-8 border-2 border-primary">
-            <AvatarImage src={user ? user.avatar_url : ""} alt="Host" />
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar>
-          <div>
-            <Button className="" onClick={onchat} variant="outline">
-              <MessageCircleIcon />
-            </Button>
-            {/* <p className="ms-2 text-sm font-medium line-clamp-1">
-              {user ? user.full_name : ""}
-            </p> */}
-          </div>
+          
+          {cost && (
+            <p className="text-sm font-bold">
+              {currency}{Number(converted(cost)).toFixed(0)}
+            </p>
+          )}
         </div>
+        
+        {/* Image Side */}
+        <Link to={"/listing/" + short_id} className="w-1/3 relative">
+          <img 
+            src={images?.[0] || ''} 
+            alt={title} 
+            className="h-full w-full object-cover"
+          />
+          
+        </Link>
+      </div>
+      
+      {/* Action Footer */}
+      <div className="px-3 py-2 border-t flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <LikeButton
+            id={id}
+            isliked={isLiked}
+            className=" h-6 w-6"
+          />
+          <Button size="sm" onClick={onchat} variant="ghost" className="h-7 w-7 p-0">
+            <MessageCircleIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 w-7 p-0"
+            onClick={shareHundler({
+              text: "Find Your Next Amazing Travel Places Here check here",
+              url: `/listing/${id}`,
+            })}
+          >
+            <Share2 className="h-4 w-4" />
+          </Button>
+        </div>
+        
         <Link to={"/listing/" + short_id + "/available"}>
           <Button
             variant="outline"
             size="sm"
-            className="transition-transform hover:scale-105"
-          >{cost ?
-            <p>
-              {currency}{Number(converted(cost)).toFixed(0)}{' '}
-              {t("Book Now")} </p>
-            : t("Check Availablity")}
+            className="text-xs h-7"
+          >
+            {cost ? t("Book Now") : t("Check Availability")}
           </Button>
         </Link>
-      </CardFooter>
+      </div>
     </Card>
   );
 }

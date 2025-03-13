@@ -1,5 +1,5 @@
 CREATE
-OR REPLACE FUNCTION get_other_chat_users(chat_id_input bigint, current_user_id uuid) RETURNS uuid [] AS $$ DECLARE all_users uuid [];
+OR REPLACE FUNCTION "public".get_other_chat_users(chat_id_input bigint, current_user_id uuid) RETURNS uuid [] AS $$ DECLARE all_users uuid [];
 
 other_users uuid [];
 
@@ -21,12 +21,17 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE
-OR REPLACE FUNCTION add_notification_after_message() RETURNS TRIGGER AS $ $ DECLARE other_users uuid [];
+OR REPLACE FUNCTION "public".add_notification_after_message() RETURNS TRIGGER AS $$ DECLARE other_users uuid [];
+DECLARE other_users uuid [] := '{}';
 
+-- Ensure it's initialized as an empty array
 user_id uuid;
 
 BEGIN -- Get other users in the chat excluding the current message sender
-other_users := get_other_chat_users(NEW.chat_id, NEW.user_id);
+other_users := COALESCE(
+    get_other_chat_users(NEW.chat_id, NEW.user_id),
+    '{}'
+);
 
 -- Loop through each user and insert a notification
 FOREACH user_id IN ARRAY other_users LOOP
@@ -57,9 +62,9 @@ RETURN NEW;
 
 END;
 
-$ $ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 CREATE TRIGGER add_notification
 AFTER
 INSERT
-    ON public.messages FOR EACH ROW EXECUTE FUNCTION add_notification_after_message();
+    ON public.messages FOR EACH ROW EXECUTE FUNCTION "public".add_notification_after_message();

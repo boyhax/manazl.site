@@ -15,6 +15,7 @@ import { Chat } from "./actions/chat.types"
 import { timeAgo } from "@/lib/utils/timeAgo"
 import { useNavigate } from "react-router"
 import { useTranslate } from "@tolgee/react"
+import { Header, HeaderBackButton, HeaderTitle } from "src/components/Page"
 
 export default function ChatsPage() {
   const navigate = useNavigate()
@@ -39,9 +40,10 @@ export default function ChatsPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <header className="p-4 bg-background border-b">
-        <h1 className="text-2xl font-bold">{t("Conversations")}</h1>
-      </header>
+      <Header >
+        <HeaderBackButton/>
+        <HeaderTitle >{t("Conversations")}</HeaderTitle>
+      </Header>
       <Card className="flex-grow overflow-hidden rounded-none border-x-0">
         <CardContent className="p-0 h-full">
           <ScrollArea className="h-full">

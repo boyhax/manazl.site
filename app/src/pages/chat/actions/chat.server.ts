@@ -1,4 +1,3 @@
-'use server'
 import supabase from 'src/lib/supabase'
 import { Chat, NewMessage } from './chat.types'
 

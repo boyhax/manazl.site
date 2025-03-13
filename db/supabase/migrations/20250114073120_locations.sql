@@ -1,19 +1,18 @@
-CREATE TABLE locations (
+CREATE TABLE "public"."locations" (
     slug TEXT UNIQUE NOT NULL,
     label_ar TEXT NOT NULL,
     label_en TEXT NOT NULL,
     url_name TEXT NOT NULL,
     type TEXT CHECK (type IN ('country', 'state', 'city')) NOT NULL,
-    parent_slug TEXT REFERENCES locations(slug) ON DELETE CASCADE ON UPDATE CASCADE,
-    location GEOGRAPHY(Point, 4326),
+    parent_slug TEXT REFERENCES "public"."locations"(slug) ON DELETE CASCADE ON UPDATE CASCADE,
+    location "extensions"."geography"(Point, 4326),
     -- Using PostGIS for spatial data
     lat DOUBLE PRECISION,
     lng DOUBLE PRECISION
 );
-
 -- Insert data with lat and lng
 INSERT INTO
-    locations (
+    "public"."locations" (
         slug,
         label_ar,
         label_en,
@@ -33,7 +32,7 @@ VALUES
         'oman',
         'country',
         NULL,
-        ST_Point(58.5933, 23.6143),
+        "extensions"."st_point"(58.5933, 23.6143),
         23.6143,
         58.5933
     ),
@@ -45,7 +44,7 @@ VALUES
         'al-batinah',
         'state',
         'oman',
-        ST_Point(57.4872, 23.6345),
+        "extensions"."ST_Point"(57.4872, 23.6345),
         23.6345,
         57.4872
     ),
@@ -57,7 +56,7 @@ VALUES
         'sohar',
         'city',
         'al-batinah',
-        ST_Point(56.6836, 24.3421),
+        "extensions"."ST_Point"(56.6836, 24.3421),
         24.3421,
         56.6836
     ),
@@ -68,7 +67,7 @@ VALUES
         'al-khaboura',
         'city',
         'al-batinah',
-        ST_Point(56.4625, 23.9817),
+        "extensions"."ST_Point"(56.4625, 23.9817),
         23.9817,
         56.4625
     ),
@@ -79,7 +78,7 @@ VALUES
         'suwaiq',
         'city',
         'al-batinah',
-        ST_Point(56.3520, 23.8494),
+        "extensions"."ST_Point"(56.3520, 23.8494),
         23.8494,
         56.3520
     ),
@@ -90,7 +89,7 @@ VALUES
         'al-awabi',
         'city',
         'al-batinah',
-        ST_Point(57.4039, 23.3173),
+        "extensions"."ST_Point"(57.4039, 23.3173),
         23.3173,
         57.4039
     ),
@@ -101,7 +100,7 @@ VALUES
         'al-masn-a',
         'city',
         'al-batinah',
-        ST_Point(57.5356, 23.4001),
+        "extensions"."ST_Point"(57.5356, 23.4001),
         23.4001,
         57.5356
     ),
@@ -112,7 +111,7 @@ VALUES
         'al-rumais',
         'city',
         'al-batinah',
-        ST_Point(57.5798, 23.4267),
+        "extensions"."ST_Point"(57.5798, 23.4267),
         23.4267,
         57.5798
     ),
@@ -123,7 +122,7 @@ VALUES
         'barka',
         'city',
         'al-batinah',
-        ST_Point(57.8885, 23.6782),
+        "extensions"."ST_Point"(57.8885, 23.6782),
         23.6782,
         57.8885
     ),
@@ -134,7 +133,7 @@ VALUES
         'liwa',
         'city',
         'al-batinah',
-        ST_Point(56.5667, 24.5295),
+        "extensions"."ST_Point"(56.5667, 24.5295),
         24.5295,
         56.5667
     ),
@@ -145,7 +144,7 @@ VALUES
         'nakhl',
         'city',
         'al-batinah',
-        ST_Point(57.7762, 23.3968),
+        "extensions"."ST_Point"(57.7762, 23.3968),
         23.3968,
         57.7762
     ),
@@ -156,7 +155,7 @@ VALUES
         'rustaq',
         'city',
         'al-batinah',
-        ST_Point(57.4244, 23.3905),
+        "extensions"."ST_Point"(57.4244, 23.3905),
         23.3905,
         57.4244
     ),
@@ -167,7 +166,7 @@ VALUES
         'saham',
         'city',
         'al-batinah',
-        ST_Point(56.8886, 24.1723),
+        "extensions"."ST_Point"(56.8886, 24.1723),
         24.1723,
         56.8886
     ),
@@ -178,7 +177,7 @@ VALUES
         'shinas',
         'city',
         'al-batinah',
-        ST_Point(56.4765, 24.7437),
+        "extensions"."ST_Point"(56.4765, 24.7437),
         24.7437,
         56.4765
     ),
@@ -189,25 +188,14 @@ VALUES
         'wadi-al-ma-awal',
         'city',
         'al-batinah',
-        ST_Point(57.4231, 23.4376),
+        "extensions"."ST_Point"(57.4231, 23.4376),
         23.4376,
         57.4231
-    ),
-    (
-        'other',
-        'أخرى',
-        'Other',
-        'other',
-        'city',
-        'al-batinah',
-        NULL,
-        NULL,
-        NULL
     );
 
-    -- Insert Al Dakhiliya state and its cities
+-- Insert Al Dakhiliya state and its cities
 INSERT INTO
-    locations (
+    "public"."locations" (
         slug,
         label_ar,
         label_en,
@@ -227,7 +215,7 @@ VALUES
         'al-dakhiliya',
         'state',
         'oman',
-        ST_Point(57.5284, 22.9331),
+        "extensions"."ST_Point"(57.5284, 22.9331),
         22.9331,
         57.5284
     ),
@@ -239,7 +227,7 @@ VALUES
         'bidbid',
         'city',
         'al-dakhiliya',
-        ST_Point(58.1285, 23.4088),
+        "extensions"."ST_Point"(58.1285, 23.4088),
         23.4088,
         58.1285
     ),
@@ -250,7 +238,7 @@ VALUES
         'nizwa',
         'city',
         'al-dakhiliya',
-        ST_Point(57.5351, 22.9331),
+        "extensions"."ST_Point"(57.5351, 22.9331),
         22.9331,
         57.5351
     ),
@@ -261,7 +249,7 @@ VALUES
         'adam',
         'city',
         'al-dakhiliya',
-        ST_Point(57.5275, 22.3751),
+        "extensions"."ST_Point"(57.5275, 22.3751),
         22.3751,
         57.5275
     ),
@@ -272,7 +260,7 @@ VALUES
         'bahla',
         'city',
         'al-dakhiliya',
-        ST_Point(57.2986, 22.9601),
+        "extensions"."ST_Point"(57.2986, 22.9601),
         22.9601,
         57.2986
     ),
@@ -283,7 +271,7 @@ VALUES
         'hamra',
         'city',
         'al-dakhiliya',
-        ST_Point(57.1974, 23.1015),
+        "extensions"."ST_Point"(57.1974, 23.1015),
         23.1015,
         57.1974
     ),
@@ -294,7 +282,7 @@ VALUES
         'izki',
         'city',
         'al-dakhiliya',
-        ST_Point(57.7663, 22.9361),
+        "extensions"."ST_Point"(57.7663, 22.9361),
         22.9361,
         57.7663
     ),
@@ -305,7 +293,7 @@ VALUES
         'manah',
         'city',
         'al-dakhiliya',
-        ST_Point(57.5832, 22.8007),
+        "extensions"."ST_Point"(57.5832, 22.8007),
         22.8007,
         57.5832
     ),
@@ -316,13 +304,13 @@ VALUES
         'sumail',
         'city',
         'al-dakhiliya',
-        ST_Point(58.0094, 23.3015),
+        "extensions"."ST_Point"(58.0094, 23.3015),
         23.3015,
         58.0094
     );
 
-    INSERT INTO
-    locations (
+INSERT INTO
+    "public"."locations" (
         slug,
         label_ar,
         label_en,
@@ -342,7 +330,7 @@ VALUES
         'al-dhahirah',
         'state',
         'oman',
-        ST_Point(56.5452, 23.2327),
+        "extensions"."ST_Point"(56.5452, 23.2327),
         23.2327,
         56.5452
     ),
@@ -354,7 +342,7 @@ VALUES
         'yunqul',
         'city',
         'al-dhahirah',
-        ST_Point(56.6585, 23.1521),
+        "extensions"."ST_Point"(56.6585, 23.1521),
         23.1521,
         56.6585
     ),
@@ -365,7 +353,7 @@ VALUES
         'dhank',
         'city',
         'al-dhahirah',
-        ST_Point(56.6713, 23.2158),
+        "extensions"."ST_Point"(56.6713, 23.2158),
         23.2158,
         56.6713
     ),
@@ -376,14 +364,14 @@ VALUES
         'ibri',
         'city',
         'al-dhahirah',
-        ST_Point(56.5343, 23.1401),
+        "extensions"."ST_Point"(56.5343, 23.1401),
         23.1401,
         56.5343
     );
 
-    -- Insert Al Sharqiya state and its cities
+-- Insert Al Sharqiya state and its cities
 INSERT INTO
-    locations (
+    "public"."locations" (
         slug,
         label_ar,
         label_en,
@@ -403,7 +391,7 @@ VALUES
         'al-sharqiya',
         'state',
         'oman',
-        ST_Point(56.2327, 22.9736),
+        "extensions"."ST_Point"(56.2327, 22.9736),
         22.9736,
         56.2327
     ),
@@ -415,7 +403,7 @@ VALUES
         'ibra',
         'city',
         'al-sharqiya',
-        ST_Point(56.4807, 22.7454),
+        "extensions"."ST_Point"(56.4807, 22.7454),
         22.7454,
         56.4807
     ),
@@ -426,7 +414,7 @@ VALUES
         'al-kamil-and-al-waafi',
         'city',
         'al-sharqiya',
-        ST_Point(56.4322, 22.7561),
+        "extensions"."ST_Point"(56.4322, 22.7561),
         22.7561,
         56.4322
     ),
@@ -437,7 +425,7 @@ VALUES
         'al-mudaibi',
         'city',
         'al-sharqiya',
-        ST_Point(56.7653, 22.8496),
+        "extensions"."ST_Point"(56.7653, 22.8496),
         22.8496,
         56.7653
     ),
@@ -448,7 +436,7 @@ VALUES
         'al-qabil',
         'city',
         'al-sharqiya',
-        ST_Point(56.8001, 22.7047),
+        "extensions"."ST_Point"(56.8001, 22.7047),
         22.7047,
         56.8001
     ),
@@ -459,7 +447,7 @@ VALUES
         'bidiya',
         'city',
         'al-sharqiya',
-        ST_Point(56.4539, 22.8169),
+        "extensions"."ST_Point"(56.4539, 22.8169),
         22.8169,
         56.4539
     ),
@@ -470,18 +458,18 @@ VALUES
         'dima-and-al-taaiyin',
         'city',
         'al-sharqiya',
-        ST_Point(56.2846, 22.9237),
+        "extensions"."ST_Point"(56.2846, 22.9237),
         22.9237,
         56.2846
     ),
     (
         'ja-alan-bani-bu-ali',
         'جعلان بني بو علي',
-        'Ja\'alan Bani Bu Ali',
+        'Jaalan Bani Bu Ali',
         'ja-alan-bani-bu-ali',
         'city',
         'al-sharqiya',
-        ST_Point(56.6154, 22.7311),
+        "extensions"."ST_Point"(56.6154, 22.7311),
         22.7311,
         56.6154
     ),
@@ -492,7 +480,7 @@ VALUES
         'jalan-bani-buhassan',
         'city',
         'al-sharqiya',
-        ST_Point(56.7984, 22.7392),
+        "extensions"."ST_Point"(56.7984, 22.7392),
         22.7392,
         56.7984
     ),
@@ -503,7 +491,7 @@ VALUES
         'masira',
         'city',
         'al-sharqiya',
-        ST_Point(58.5771, 21.9790),
+        "extensions"."ST_Point"(58.5771, 21.9790),
         21.9790,
         58.5771
     ),
@@ -514,7 +502,7 @@ VALUES
         'sinaw',
         'city',
         'al-sharqiya',
-        ST_Point(56.5744, 22.5691),
+        "extensions"."ST_Point"(56.5744, 22.5691),
         22.5691,
         56.5744
     ),
@@ -525,7 +513,7 @@ VALUES
         'sur',
         'city',
         'al-sharqiya',
-        ST_Point(56.6394, 22.5669),
+        "extensions"."ST_Point"(56.6394, 22.5669),
         22.5669,
         56.6394
     ),
@@ -536,25 +524,14 @@ VALUES
         'wadi-bani-khalid',
         'city',
         'al-sharqiya',
-        ST_Point(56.3965, 22.6501),
+        "extensions"."ST_Point"(56.3965, 22.6501),
         22.6501,
         56.3965
-    ),
-    (
-        'other',
-        'أخرى',
-        'Other',
-        'other',
-        'city',
-        'al-sharqiya',
-        NULL,
-        NULL,
-        NULL
     );
 
 -- Insert Al Wustaa state and its cities
 INSERT INTO
-    locations (
+    "public"."locations" (
         slug,
         label_ar,
         label_en,
@@ -574,7 +551,7 @@ VALUES
         'al-wusta',
         'state',
         'oman',
-        ST_Point(56.6987, 19.8319),
+        "extensions"."ST_Point"(56.6987, 19.8319),
         19.8319,
         56.6987
     ),
@@ -586,7 +563,7 @@ VALUES
         'al-duqum',
         'city',
         'al-wusta',
-        ST_Point(57.6369, 19.7683),
+        "extensions"."ST_Point"(57.6369, 19.7683),
         19.7683,
         57.6369
     ),
@@ -597,7 +574,7 @@ VALUES
         'al-jazur',
         'city',
         'al-wusta',
-        ST_Point(57.4389, 20.2564),
+        "extensions"."ST_Point"(57.4389, 20.2564),
         20.2564,
         57.4389
     ),
@@ -608,7 +585,7 @@ VALUES
         'haima',
         'city',
         'al-wusta',
-        ST_Point(57.6397, 20.4652),
+        "extensions"."ST_Point"(57.6397, 20.4652),
         20.4652,
         57.6397
     ),
@@ -619,25 +596,14 @@ VALUES
         'mahut',
         'city',
         'al-wusta',
-        ST_Point(58.1397, 19.7581),
+        "extensions"."ST_Point"(58.1397, 19.7581),
         19.7581,
         58.1397
-    ),
-    (
-        'other',
-        'أخرى',
-        'Other',
-        'other',
-        'city',
-        'al-wusta',
-        NULL,
-        NULL,
-        NULL
     );
 
 -- Insert Buraimi state and its cities
 INSERT INTO
-    locations (
+    "public"."locations" (
         slug,
         label_ar,
         label_en,
@@ -657,7 +623,7 @@ VALUES
         'buraimi',
         'state',
         'oman',
-        ST_Point(55.9740, 24.2477),
+        "extensions"."ST_Point"(55.9740, 24.2477),
         24.2477,
         55.9740
     ),
@@ -669,7 +635,7 @@ VALUES
         'al-buraimi',
         'city',
         'buraimi',
-        ST_Point(55.9523, 24.2481),
+        "extensions"."ST_Point"(55.9523, 24.2481),
         24.2481,
         55.9523
     ),
@@ -680,7 +646,7 @@ VALUES
         'al-sinainah',
         'city',
         'buraimi',
-        ST_Point(55.9694, 24.2215),
+        "extensions"."ST_Point"(55.9694, 24.2215),
         24.2215,
         55.9694
     ),
@@ -691,24 +657,13 @@ VALUES
         'mahdah',
         'city',
         'buraimi',
-        ST_Point(55.8252, 24.0507),
+        "extensions"."ST_Point"(55.8252, 24.0507),
         24.0507,
         55.8252
-    ),
-    (
-        'other',
-        'أخرى',
-        'Other',
-        'other',
-        'city',
-        'buraimi',
-        NULL,
-        NULL,
-        NULL
     );
 
-    INSERT INTO
-    locations (
+INSERT INTO
+    "public"."locations" (
         slug,
         label_ar,
         label_en,
@@ -728,7 +683,7 @@ VALUES
         'dhofar',
         'state',
         'oman',
-        ST_Point(54.0912, 17.0117),
+        "extensions"."ST_Point"(54.0912, 17.0117),
         17.0117,
         54.0912
     ),
@@ -740,7 +695,7 @@ VALUES
         'salala',
         'city',
         'dhofar',
-        ST_Point(54.0842, 17.0150),
+        "extensions"."ST_Point"(54.0842, 17.0150),
         17.0150,
         54.0842
     ),
@@ -751,7 +706,7 @@ VALUES
         'taqah',
         'city',
         'dhofar',
-        ST_Point(54.4661, 17.0108),
+        "extensions"."ST_Point"(54.4661, 17.0108),
         17.0108,
         54.4661
     ),
@@ -762,7 +717,7 @@ VALUES
         'mirbat',
         'city',
         'dhofar',
-        ST_Point(54.5492, 17.0365),
+        "extensions"."ST_Point"(54.5492, 17.0365),
         17.0365,
         54.5492
     ),
@@ -773,7 +728,7 @@ VALUES
         'al-mazyona',
         'city',
         'dhofar',
-        ST_Point(53.7059, 17.1810),
+        "extensions"."ST_Point"(53.7059, 17.1810),
         17.1810,
         53.7059
     ),
@@ -784,7 +739,7 @@ VALUES
         'dhalkut',
         'city',
         'dhofar',
-        ST_Point(53.8005, 17.0931),
+        "extensions"."ST_Point"(53.8005, 17.0931),
         17.0931,
         53.8005
     ),
@@ -795,7 +750,7 @@ VALUES
         'muqshin',
         'city',
         'dhofar',
-        ST_Point(53.8000, 17.0160),
+        "extensions"."ST_Point"(53.8000, 17.0160),
         17.0160,
         53.8000
     ),
@@ -806,7 +761,7 @@ VALUES
         'rakhyut',
         'city',
         'dhofar',
-        ST_Point(53.8005, 17.5400),
+        "extensions"."ST_Point"(53.8005, 17.5400),
         17.5400,
         53.8005
     ),
@@ -817,7 +772,7 @@ VALUES
         'sadah',
         'city',
         'dhofar',
-        ST_Point(53.7233, 17.0225),
+        "extensions"."ST_Point"(53.7233, 17.0225),
         17.0225,
         53.7233
     ),
@@ -828,7 +783,7 @@ VALUES
         'shalim-and-the-hallaniyat-island',
         'city',
         'dhofar',
-        ST_Point(53.9548, 17.2215),
+        "extensions"."ST_Point"(53.9548, 17.2215),
         17.2215,
         53.9548
     ),
@@ -839,14 +794,14 @@ VALUES
         'thumrait',
         'city',
         'dhofar',
-        ST_Point(54.4541, 17.3933),
+        "extensions"."ST_Point"(54.4541, 17.3933),
         17.3933,
         54.4541
     );
 
 -- Insert Musandam state and its cities
 INSERT INTO
-    locations (
+    "public"."locations" (
         slug,
         label_ar,
         label_en,
@@ -866,7 +821,7 @@ VALUES
         'musandam',
         'state',
         'oman',
-        ST_Point(56.2328, 26.0847),
+        "extensions"."ST_Point"(56.2328, 26.0847),
         26.0847,
         56.2328
     ),
@@ -878,7 +833,7 @@ VALUES
         'bukha',
         'city',
         'musandam',
-        ST_Point(56.2711, 26.2297),
+        "extensions"."ST_Point"(56.2711, 26.2297),
         26.2297,
         56.2711
     ),
@@ -889,7 +844,7 @@ VALUES
         'dibba',
         'city',
         'musandam',
-        ST_Point(56.2745, 26.2709),
+        "extensions"."ST_Point"(56.2745, 26.2709),
         26.2709,
         56.2745
     ),
@@ -900,7 +855,7 @@ VALUES
         'khasab',
         'city',
         'musandam',
-        ST_Point(56.2686, 26.1748),
+        "extensions"."ST_Point"(56.2686, 26.1748),
         26.1748,
         56.2686
     ),
@@ -911,7 +866,7 @@ VALUES
         'limah',
         'city',
         'musandam',
-        ST_Point(56.1702, 26.2110),
+        "extensions"."ST_Point"(56.1702, 26.2110),
         26.2110,
         56.1702
     ),
@@ -922,15 +877,14 @@ VALUES
         'madha',
         'city',
         'musandam',
-        ST_Point(56.1248, 26.2486),
+        "extensions"."ST_Point"(56.1248, 26.2486),
         26.2486,
         56.1248
     );
 
-
 -- Insert Muscat state and its citys
 INSERT INTO
-    locations (
+    "public"."locations" (
         slug,
         label_ar,
         label_en,
@@ -950,7 +904,7 @@ VALUES
         'muscat',
         'state',
         'oman',
-        ST_Point(58.5922, 23.5887),
+        "extensions"."ST_Point"(58.5922, 23.5887),
         23.5887,
         58.5922
     ),
@@ -962,7 +916,7 @@ VALUES
         'bosher',
         'city',
         'muscat',
-        ST_Point(58.4165, 23.5774),
+        "extensions"."ST_Point"(58.4165, 23.5774),
         23.5774,
         58.4165
     ),
@@ -973,7 +927,7 @@ VALUES
         'al-khoud',
         'city',
         'muscat',
-        ST_Point(58.3624, 23.5936),
+        "extensions"."ST_Point"(58.3624, 23.5936),
         23.5936,
         58.3624
     ),
@@ -984,7 +938,7 @@ VALUES
         'al-mouj',
         'city',
         'muscat',
-        ST_Point(58.2465, 23.6232),
+        "extensions"."ST_Point"(58.2465, 23.6232),
         23.6232,
         58.2465
     ),
@@ -995,7 +949,7 @@ VALUES
         'azaiba',
         'city',
         'muscat',
-        ST_Point(58.3523, 23.6155),
+        "extensions"."ST_Point"(58.3523, 23.6155),
         23.6155,
         58.3523
     ),
@@ -1006,7 +960,7 @@ VALUES
         'al-maabilah',
         'city',
         'muscat',
-        ST_Point(58.2757, 23.6074),
+        "extensions"."ST_Point"(58.2757, 23.6074),
         23.6074,
         58.2757
     ),
@@ -1017,7 +971,7 @@ VALUES
         'al-mawaleh',
         'city',
         'muscat',
-        ST_Point(58.3146, 23.6331),
+        "extensions"."ST_Point"(58.3146, 23.6331),
         23.6331,
         58.3146
     ),
@@ -1028,7 +982,7 @@ VALUES
         'qurm',
         'city',
         'muscat',
-        ST_Point(58.4253, 23.5820),
+        "extensions"."ST_Point"(58.4253, 23.5820),
         23.5820,
         58.4253
     ),
@@ -1039,7 +993,7 @@ VALUES
         'ghala',
         'city',
         'muscat',
-        ST_Point(58.3577, 23.5804),
+        "extensions"."ST_Point"(58.3577, 23.5804),
         23.5804,
         58.3577
     ),
@@ -1050,7 +1004,7 @@ VALUES
         'madinat-as-sultan-qaboos',
         'city',
         'muscat',
-        ST_Point(58.3794, 23.5769),
+        "extensions"."ST_Point"(58.3794, 23.5769),
         23.5769,
         58.3794
     ),
@@ -1061,7 +1015,7 @@ VALUES
         'amerat',
         'city',
         'muscat',
-        ST_Point(58.3806, 23.5470),
+        "extensions"."ST_Point"(58.3806, 23.5470),
         23.5470,
         58.3806
     ),
@@ -1072,7 +1026,7 @@ VALUES
         'muscat-hills',
         'city',
         'muscat',
-        ST_Point(58.2824, 23.6248),
+        "extensions"."ST_Point"(58.2824, 23.6248),
         23.6248,
         58.2824
     ),
@@ -1083,7 +1037,7 @@ VALUES
         'al-sifah',
         'city',
         'muscat',
-        ST_Point(58.3928, 23.4727),
+        "extensions"."ST_Point"(58.3928, 23.4727),
         23.4727,
         58.3928
     ),
@@ -1094,7 +1048,7 @@ VALUES
         'seeb',
         'city',
         'muscat',
-        ST_Point(58.2265, 23.6070),
+        "extensions"."ST_Point"(58.2265, 23.6070),
         23.6070,
         58.2265
     ),
@@ -1105,7 +1059,7 @@ VALUES
         'qantab',
         'city',
         'muscat',
-        ST_Point(58.3354, 23.6023),
+        "extensions"."ST_Point"(58.3354, 23.6023),
         23.6023,
         58.3354
     ),
@@ -1116,7 +1070,7 @@ VALUES
         'ghubrah',
         'city',
         'muscat',
-        ST_Point(58.4002, 23.5964),
+        "extensions"."ST_Point"(58.4002, 23.5964),
         23.5964,
         58.4002
     ),
@@ -1127,7 +1081,7 @@ VALUES
         'yiti',
         'city',
         'muscat',
-        ST_Point(58.3115, 23.4980),
+        "extensions"."ST_Point"(58.3115, 23.4980),
         23.4980,
         58.3115
     ),
@@ -1138,7 +1092,7 @@ VALUES
         'al-khuwair',
         'city',
         'muscat',
-        ST_Point(58.4011, 23.5889),
+        "extensions"."ST_Point"(58.4011, 23.5889),
         23.5889,
         58.4011
     ),
@@ -1149,7 +1103,7 @@ VALUES
         'al-hail',
         'city',
         'muscat',
-        ST_Point(58.4189, 23.5378),
+        "extensions"."ST_Point"(58.4189, 23.5378),
         23.5378,
         58.4189
     ),
@@ -1160,7 +1114,7 @@ VALUES
         'ansab',
         'city',
         'muscat',
-        ST_Point(58.4010, 23.5633),
+        "extensions"."ST_Point"(58.4010, 23.5633),
         23.5633,
         58.4010
     ),
@@ -1171,7 +1125,7 @@ VALUES
         'halban',
         'city',
         'muscat',
-        ST_Point(58.2571, 23.5997),
+        "extensions"."ST_Point"(58.2571, 23.5997),
         23.5997,
         58.2571
     ),
@@ -1182,7 +1136,7 @@ VALUES
         'barr-al-jissah',
         'city',
         'muscat',
-        ST_Point(58.3470, 23.5881),
+        "extensions"."ST_Point"(58.3470, 23.5881),
         23.5881,
         58.3470
     ),
@@ -1193,7 +1147,7 @@ VALUES
         'misfah',
         'city',
         'muscat',
-        ST_Point(58.3661, 23.5990),
+        "extensions"."ST_Point"(58.3661, 23.5990),
         23.5990,
         58.3661
     ),
@@ -1204,7 +1158,7 @@ VALUES
         'al-bustan',
         'city',
         'muscat',
-        ST_Point(58.3740, 23.5880),
+        "extensions"."ST_Point"(58.3740, 23.5880),
         23.5880,
         58.3740
     ),
@@ -1215,7 +1169,7 @@ VALUES
         'al-jafnayn',
         'city',
         'muscat',
-        ST_Point(58.3555, 23.5621),
+        "extensions"."ST_Point"(58.3555, 23.5621),
         23.5621,
         58.3555
     ),
@@ -1226,7 +1180,7 @@ VALUES
         'quriyat',
         'city',
         'muscat',
-        ST_Point(58.4384, 23.5073),
+        "extensions"."ST_Point"(58.4384, 23.5073),
         23.5073,
         58.4384
     ),
@@ -1237,7 +1191,7 @@ VALUES
         'hamriya',
         'city',
         'muscat',
-        ST_Point(58.4423, 23.5322),
+        "extensions"."ST_Point"(58.4423, 23.5322),
         23.5322,
         58.4423
     ),
@@ -1248,7 +1202,7 @@ VALUES
         'rusail',
         'city',
         'muscat',
-        ST_Point(58.4235, 23.5410),
+        "extensions"."ST_Point"(58.4235, 23.5410),
         23.5410,
         58.4235
     ),
@@ -1259,7 +1213,7 @@ VALUES
         'darsait',
         'city',
         'muscat',
-        ST_Point(58.3675, 23.5558),
+        "extensions"."ST_Point"(58.3675, 23.5558),
         23.5558,
         58.3675
     ),
@@ -1270,7 +1224,7 @@ VALUES
         'ruwi',
         'city',
         'muscat',
-        ST_Point(58.4111, 23.5662),
+        "extensions"."ST_Point"(58.4111, 23.5662),
         23.5662,
         58.4111
     ),
@@ -1281,7 +1235,7 @@ VALUES
         'wadi-al-kabir',
         'city',
         'muscat',
-        ST_Point(58.3994, 23.5812),
+        "extensions"."ST_Point"(58.3994, 23.5812),
         23.5812,
         58.3994
     ),
@@ -1292,7 +1246,7 @@ VALUES
         'manumah',
         'city',
         'muscat',
-        ST_Point(58.4344, 23.5694),
+        "extensions"."ST_Point"(58.4344, 23.5694),
         23.5694,
         58.4344
     ),
@@ -1303,7 +1257,7 @@ VALUES
         'al-wuttayah',
         'city',
         'muscat',
-        ST_Point(58.3934, 23.5846),
+        "extensions"."ST_Point"(58.3934, 23.5846),
         23.5846,
         58.3934
     ),
@@ -1314,7 +1268,7 @@ VALUES
         'muttrah',
         'city',
         'muscat',
-        ST_Point(58.4527, 23.6045),
+        "extensions"."ST_Point"(58.4527, 23.6045),
         23.6045,
         58.4527
     ),
@@ -1325,7 +1279,7 @@ VALUES
         'sidab',
         'city',
         'muscat',
-        ST_Point(58.4458, 23.6129),
+        "extensions"."ST_Point"(58.4458, 23.6129),
         23.6129,
         58.4458
     ),
@@ -1336,7 +1290,7 @@ VALUES
         'yenkit',
         'city',
         'muscat',
-        ST_Point(58.4182, 23.4890),
+        "extensions"."ST_Point"(58.4182, 23.4890),
         23.4890,
         58.4182
     );

@@ -1,6 +1,6 @@
-ALTER TABLE listings ADD COLUMN updated_at TIMESTAMP DEFAULT NOW();
+ALTER TABLE "public"."listings" ADD COLUMN updated_at TIMESTAMP DEFAULT NOW();
 
-CREATE OR REPLACE FUNCTION update_updated_at()
+CREATE OR REPLACE FUNCTION "public".update_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = NOW();
@@ -9,7 +9,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER listings_update_timestamp
-BEFORE UPDATE ON listings
+BEFORE UPDATE ON "public"."listings"
 FOR EACH ROW
-EXECUTE FUNCTION update_updated_at();
+EXECUTE FUNCTION "public".update_updated_at();
 

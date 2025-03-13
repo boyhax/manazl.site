@@ -1,5 +1,4 @@
 import supabase from "src/lib/supabase";
-import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import getPathTo from "../utils/getPathTo";
 import { SocialLogin } from "@capgo/capacitor-social-login";
 
@@ -12,15 +11,9 @@ export async function getuserid() {
 //       "202404083933-k5hccrktt6hopmjoa30k0j7kq80h4smc.apps.googleusercontent.com", // the web client id for Android and Web
 //   },
 // });
-GoogleAuth.initialize({
-  clientId:
-    "202404083933-k5hccrktt6hopmjoa30k0j7kq80h4smc.apps.googleusercontent.com",
-  scopes: ["profile", "email"],
-  grantOfflineAccess: true,
-});
+
 export async function GoogleSignIn() {
   try {
-    const auth = await GoogleAuth.signIn();
 
     // const res = await SocialLogin.login({
     //   provider: "google",
@@ -36,11 +29,11 @@ export async function GoogleSignIn() {
     //   "access token from auth model oauth sign in => ",
     //   JSON.stringify(auth)
     // );
-    return supabase.auth.signInWithIdToken({
-      provider: "google",
-      access_token: auth.authentication.accessToken,
-      token: auth.authentication.idToken,
-    });
+    // return supabase.auth.signInWithIdToken({
+    //   provider: "google",
+    //   access_token: auth.authentication.accessToken,
+    //   token: auth.authentication.idToken,
+    // });
   } catch (error) {
     console.log("error GoogleSignIn:>> ", JSON.stringify(error));
     return {
@@ -50,7 +43,6 @@ export async function GoogleSignIn() {
   }
 }
 export async function SignOut() {
-  GoogleAuth.signOut();
   return supabase.auth.signOut();
 }
 

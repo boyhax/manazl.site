@@ -75,7 +75,7 @@ export function HostListingCard({ listing }: { listing: Listing }) {
   return (
     <Card className="w-full">
       <CardHeader className="space-y-2">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between">
           <CardTitle className="text-xl">{listing.title}</CardTitle>
           <Link to={`/account/myhost`}>
             <Button size="sm" variant="outline">

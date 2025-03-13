@@ -1,5 +1,5 @@
 -- Create the host_types table
-CREATE TABLE host_types (
+CREATE TABLE "public"."host_types" (
     id SERIAL PRIMARY KEY,
     label_ar TEXT NOT NULL,
     label TEXT UNIQUE NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE host_types (
 );
 
 -- Create the amenities table
-CREATE TABLE amenities (
+CREATE TABLE "public"."amenities" (
     id SERIAL PRIMARY KEY,
     label_ar TEXT NOT NULL,
     label TEXT UNIQUE NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE amenities (
 
 -- Insert data into host_types
 INSERT INTO
-    host_types (label_ar, label, icon, image)
+    "public"."host_types" (label_ar, label, icon, image)
 VALUES
     (
         'جناح',
@@ -32,7 +32,7 @@ VALUES
 
 -- Insert data into amenities
 INSERT INTO
-    amenities (label_ar, label, icon, image)
+    "public"."amenities" (label_ar, label, icon, image)
 VALUES
     ('واي فاي', 'Wi-Fi', 'mdi:wifi', 'wifi.jpg'),
     ('تلفزيون', 'TV', 'mdi:television', 'tv.jpg'),

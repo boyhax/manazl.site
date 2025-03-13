@@ -19,6 +19,7 @@ import LoadingSpinnerComponent from "react-spinners-components";
 import { Tolgee, DevTools, FormatSimple, BackendFetch, TolgeeProvider } from "@tolgee/react";
 import { UserProvider } from "@/providers/userProvider";
 import Header  from "@/components/layout/header";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const tolgee = Tolgee()
   .use(DevTools())
@@ -59,6 +60,7 @@ export default function RootLayout({
         <meta title="description" content="Oman Travel Booking hostels and hotels "></meta>
         <link rel="icon" href="/favicon.png" sizes="any" />
       </head>
+
       <body className={inter.className}>
 
         <QueryClientProvider client={queryClient}>
@@ -72,6 +74,7 @@ export default function RootLayout({
           <Toaster />
         </QueryClientProvider>
       </body>
+      <GoogleAnalytics gaId="G-P5K7WZ0BFY" />
 
 
     </html>
