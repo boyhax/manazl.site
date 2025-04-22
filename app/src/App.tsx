@@ -65,6 +65,7 @@ loader.importLibrary("places").then((res) => {
 });
 
 export const googleapi = loader;
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 // import function to register Swiper custom elements
 import { register } from "swiper/element/bundle";
@@ -105,6 +106,7 @@ export default function () {
         <Toaster />
         <RouterProvider router={router} fallbackElement={<ErrorBoundary />} />
       </IonApp>
+      <ReactQueryDevtools buttonPosition="bottom-left" client={queryClient} initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

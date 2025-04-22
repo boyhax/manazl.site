@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Menu, X, Home, Compass, Briefcase, MessageCircle, User, Settings } from 'lucide-react'
+import { Menu, X, Home, Compass, Briefcase, MessageCircle, User, Settings, Gamepad } from 'lucide-react'
 import { Link } from 'react-router-dom'
 const navItems = [
     { icon: Home, label: 'Home', href: '/' },
@@ -18,7 +18,7 @@ const NavigationFAB: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false)
 
     const toggleMenu = () => setIsOpen(!isOpen)
-
+    const dev = import.meta.env.MODE === 'development'
     return (
         <TooltipProvider>
             <div className="fixed bottom-6 right-6 z-50">
@@ -91,6 +91,33 @@ const NavigationFAB: React.FC = () => {
                                     </Tooltip>
                                 </motion.div>
                             ))}
+                           {!dev?null: <motion.div
+                                key={'playgroundfap'}
+                                initial={{ x: 50, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: 50, opacity: 0 }}
+                                transition={{ duration: 0.2, delay: 5 * 0.05 }}
+                            >
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            onClick={toggleMenu}
+                                            asChild
+                                            variant="secondary"
+                                            size="icon"
+                                            className="h-12 w-12 rounded-full shadow-md"
+                                        >
+                                            <Link to={'/playground'}>
+                                                <Gamepad className="h-5 w-5" />
+                                                <span className="sr-only">{'testing'}</span>
+                                            </Link>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="left" sideOffset={5}>
+                                        {'testing'}
+                                    </TooltipContent>
+                                </Tooltip>
+                            </motion.div>}
                         </motion.div>
                     )}
                 </AnimatePresence>

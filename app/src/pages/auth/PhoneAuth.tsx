@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -6,11 +5,32 @@ import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
 import supabase from "src/lib/supabase"
 import { motion } from "framer-motion"
-import { PhoneIcon, ArrowLeftIcon } from "lucide-react"
+import { PhoneIcon, ArrowLeftIcon, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+// Define country codes
+const countryCodes = [
+  { code: "+968", country: "OM", name: "Oman" },
+  { code: "+971", country: "AE", name: "UAE" },
+  { code: "+966", country: "SA", name: "Saudi Arabia" },
+  { code: "+974", country: "QA", name: "Qatar" },
+  { code: "+965", country: "KW", name: "Kuwait" },
+  { code: "+973", country: "BH", name: "Bahrain" },
+  { code: "+20", country: "EG", name: "Egypt" },
+  { code: "+962", country: "JO", name: "Jordan" },
+  { code: "+961", country: "LB", name: "Lebanon" },
+]
 
 export default function PhoneAuth() {
   const [phoneNumber, setPhoneNumber] = useState("")
+  const [countryCode, setCountryCode] = useState("+968")
   const [otp, setOtp] = useState("")
   const [isFlipped, setIsFlipped] = useState(false)
   const [inputFocused, setInputFocused] = useState(false)
@@ -32,15 +52,16 @@ export default function PhoneAuth() {
     setIsLoading(true)
     
     try {
+      const fullPhoneNumber = countryCode + phoneNumber.replace(/^0+/, '')
       const { data, error } = await supabase.auth.signInWithOtp({
-        phone: phoneNumber,
+        phone: fullPhoneNumber,
       })
       
       if (error) throw Error(error.message)
       
       toast({
         title: "Code sent",
-        description: `OTP sent to ${phoneNumber}`,
+        description: `OTP sent to ${fullPhoneNumber}`,
       })
       
       setIsFlipped(true)
@@ -62,7 +83,7 @@ export default function PhoneAuth() {
     
     try {
       const { data, error } = await supabase.auth.verifyOtp({
-        phone: phoneNumber, 
+        phone: countryCode + phoneNumber.replace(/^0+/, ''), 
         token: otp, 
         type: "sms",
       })
@@ -89,8 +110,9 @@ export default function PhoneAuth() {
     
     setIsLoading(true)
     try {
+      const fullPhoneNumber = countryCode + phoneNumber.replace(/^0+/, '')
       const { error } = await supabase.auth.signInWithOtp({
-        phone: phoneNumber,
+        phone: fullPhoneNumber,
       })
       
       if (error) throw Error(error.message)
@@ -129,25 +151,42 @@ export default function PhoneAuth() {
               inputFocused ? "scale-105" : ""
             )}>
               <Label htmlFor="phoneNumber">Phone</Label>
-              <div className="relative">
-                <PhoneIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  id="phoneNumber"
-                  type="tel"
-                  className="pl-10"
-                  placeholder="+968 1234 5678"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  onFocus={() => setInputFocused(true)}
-                  onBlur={() => setInputFocused(false)}
-                  required
-                />
+              <div className="flex">
+                <Select 
+                  value={countryCode}
+                  onValueChange={setCountryCode}
+                >
+                  <SelectTrigger className="w-[110px] mr-2 flex-shrink-0">
+                    <SelectValue placeholder="+968" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countryCodes.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        <span className="flex items-center">
+                          {country.code} ({country.country})
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="relative flex-1">
+                  <Input
+                    id="phoneNumber"
+                    type="tel"
+                    placeholder="1234 5678"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ''))}
+                    onFocus={() => setInputFocused(true)}
+                    onBlur={() => setInputFocused(false)}
+                    required
+                  />
+                </div>
               </div>
             </div>
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isLoading}
+              disabled={isLoading || !phoneNumber}
             >
               {isLoading ? "Sending..." : "Continue"}
             </Button>
@@ -176,7 +215,7 @@ export default function PhoneAuth() {
                 <div className="flex justify-between items-center">
                   <Label htmlFor="otp">Verification Code</Label>
                   <span className="text-xs text-muted-foreground">
-                    {phoneNumber}
+                    {countryCode + phoneNumber.replace(/^0+/, '')}
                   </span>
                 </div>
                 <Input

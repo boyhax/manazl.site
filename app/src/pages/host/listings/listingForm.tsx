@@ -6,7 +6,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { IonSpinner } from "@ionic/react";
 import { useTranslate } from "@tolgee/react";
-import { useFormikContext } from "formik";
 import {
   BedDoubleIcon,
   BuildingIcon, HomeIcon,
@@ -15,86 +14,175 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import ListingPlacePicker from "src/components/ListingPlacePicker";
-import UserImageGallary from "src/components/UserImageGallary";
 import { Stepper, StepperContent } from "src/components/stepper";
 import TagsInput from "src/components/ui/tagsInput";
-import supabase from "src/lib/supabase";
 import { auth } from "src/state/auth";
+import ImagePicker from "src/components/ImagePicker";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { listingSchema } from "./editListing";
 
 export const hostTypes = [
-  { icon: HomeIcon, label: "Suite", value: "suite" },
-  { icon: BuildingIcon, label: "Villa", value: "villa" },
-  { icon: BedDoubleIcon, label: "Room", value: "room" },
-  { icon: TentIcon, label: "Camp", value: "camp" },
+  { id: 1, icon: HomeIcon, label: "Suite", value: "suite" },
+  { id: 2, icon: BuildingIcon, label: "Villa", value: "villa" },
+  { id: 3, icon: BedDoubleIcon, label: "Room", value: "room" },
+  { id: 4, icon: TentIcon, label: "Camp", value: "camp" },
+  { id: 5, icon: HomeIcon, label: "Apartment", value: "apartment" },
+  { id: 6, icon: HomeIcon, label: "House", value: "house" },
+  { id: 7, icon: HomeIcon, label: "Chalet", value: "chalet" },
+  { id: 8, icon: HomeIcon, label: "Cabin", value: "cabin" },
 ];
 
 export const amenities = [
-  "Wi-Fi",
-  "TV",
-  "Kitchen",
-  "Washer",
-  "Free parking",
-  "Paid parking",
-  "Air conditioning",
-  "Dedicated workspace",
-  "Pool",
-  "Hot tub",
-  "Patio",
-  "BBQ grill",
-  "Outdoor dining area",
-  "Fire pit",
-  "Gym",
-  "Beach access",
-  "Ski-in/Ski-out",
-  "Smoke alarm",
-  "First aid kit",
+  {
+    id: '1', label: "Wi-Fi", label_ar: "Wi-Fi", icon: "wifi",
+  },
+  {
+    id: '2', label: "TV", label_ar: "TV", icon: "tv",
+  },
+  {
+    id: '3', label: "Kitchen", label_ar: "Kitchen", icon: "kitchen",
+  },
+  {
+    id: '4', label: "Washer", label_ar: "Washer", icon: "washer",
+  },
+  {
+    id: '5', label: "Free parking", label_ar: "Free parking", icon: "parking",
+  },
+  {
+    id: '6', label: "Paid parking", label_ar: "Paid parking", icon: "parking",
+  },
+  {
+    id: '7', label: "Air conditioning", label_ar: "Air conditioning", icon: "ac",
+  },
+  {
+    id: '8', label: "Dedicated workspace", label_ar: "Dedicated workspace", icon: "workspace",
+  },
+  {
+    id: '9', label: "Pool", label_ar: "Pool", icon: "pool",
+  },
+  {
+    id: '10', label: "Hot tub", label_ar: "Hot tub", icon: "hot_tub",
+  },
+  {
+    id: '11', label: "Patio", label_ar: "Patio", icon: "patio",
+  },
+  {
+    id: '12', label: "BBQ grill", label_ar: "BBQ grill", icon: "bbq_grill",
+  },
+  {
+    id: '13', label: "Outdoor dining area", label_ar: "Outdoor dining area", icon: "outdoor_dining",
+  },
+  {
+    id: '14', label: "Fire pit", label_ar: "Fire pit", icon: "fire_pit"
+  },
+  {
+    id: '15', label: "Gym", label_ar: "Gym", icon: "gym"
+  },
+  {
+    id: '16', label: "Spa", label_ar: "Spa", icon: "spa"
+  },
+  {
+    id: '17', label: "Pet friendly", label_ar: "Pet friendly", icon: "pet_friendly"
+  },
+  {
+    id: '18', label: "Breakfast included", label_ar: "Breakfast included", icon: "breakfast_included"
+  },
+  {
+    id: '19', label: "Family friendly", label_ar: "Family friendly", icon: "family_friendly"
+  },
 ];
-export type ListingformProps = {
-  title: string;
-  description: string;
-  images: any[];
-  address: { city, state, country },
-  lat: number;
-  lng: number;
-  type: string;
-  meta?;
-  place_name?: '',
-  amenities: string[];
-  tags: string[];
-};
-export const defaultValues: ListingformProps = {
+
+export type ListingFormData = z.infer<typeof listingSchema>;
+
+export const defaultValues: ListingFormData = {
   lat: 23.5,
   lng: 58.5,
   address: { city: "", country: "", state: "" },
   meta: {},
   title: "",
-  place_name: "",
   description: "",
   images: [],
   type: "villa",
   amenities: [],
   tags: [],
 };
-export default function ({ }) {
+
+type ListingFormProps = {
+  initialValues?: ListingFormData;
+  onSubmit: (data: ListingFormData) => void;
+  isSubmitting?: boolean;
+};
+
+export default function ListingForm({ initialValues = defaultValues, onSubmit, isSubmitting = false }: ListingFormProps) {
   const user = auth((s) => s.user);
   const [step, setStep] = useState(1);
-  const { values, setFieldValue, errors, touched, ...form } =
-    useFormikContext<ListingformProps>();
   const { t } = useTranslate();
-  const updateForm = (key, value) => {
-    setFieldValue(key, value);
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    getValues,
+    trigger,
+    watch
+  } = useForm<ListingFormData>({
+    defaultValues: initialValues,
+    resolver: zodResolver(listingSchema),
+    mode: 'onChange',
+  });
+
+  // Watch for images to handle proper validation
+  const watchImages = watch("images");
+  const watchFilesToUpload = watch("filesToUpload");
+
+  const onFormSubmit: SubmitHandler<ListingFormData> = (data) => {
+    onSubmit(data);
   };
 
-  const handleNextStep = () => setStep((prev) => Math.min(prev + 1, 7));
+  const handleRemoveOldImage = (imageUrl: string) => {
+    // Add to imagesToDelete array
+    const currentImagesToDelete = getValues("imagesToDelete") || [];
+    setValue("imagesToDelete", [...currentImagesToDelete, imageUrl]);
+    
+    // Remove from images array
+    const currentImages = getValues("images") || [];
+    setValue("images", currentImages.filter(img => img !== imageUrl));
+  };
+
+  const handleNextStep = async () => {
+    // Validate the fields in the current step before proceeding
+    const fieldValidationMap = {
+      1: ['title', 'description'],
+      2: ['images'],
+      3: ['type'],
+      4: ['amenities'],
+      5: ['lat', 'lng', 'place_name'],
+      6: ['tags']
+    };
+
+    const fieldsToValidate = fieldValidationMap[step] || [];
+    const isValid = await trigger(fieldsToValidate as any);
+
+    if (isValid) {
+      setStep((prev) => Math.min(prev + 1, 6));
+    }
+  };
+
   const handlePrevStep = () => setStep((prev) => Math.max(prev - 1, 1));
-  const renderErrorMessage = (fieldName: string) => {
-    if (errors[fieldName]) {
+
+  const renderErrorMessage = (fieldName: keyof ListingFormData) => {
+    const errorMessage = errors[fieldName]?.message;
+    if (errorMessage) {
       return (
-        <p className="text-sm bg-slate-100 text-destructive mt-1">{errors[fieldName]}</p>
+        <p className="text-sm bg-slate-100 text-destructive mt-1">{errorMessage as string}</p>
       );
     }
     return null;
   };
+
   const steps = [
     {
       title: t("Title and Description"),
@@ -104,12 +192,17 @@ export default function ({ }) {
             <Label htmlFor="title" className="text-sm font-medium">
               {t("Title")}
             </Label>
-            <Input
-              id="title"
-              value={values.title}
-              onChange={(e) => updateForm("title", e.target.value)}
-              placeholder={t("Enter a catchy title for your listing")}
-              className="mt-1"
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  id="title"
+                  {...field}
+                  placeholder={t("Enter a catchy title for your listing")}
+                  className="mt-1"
+                />
+              )}
             />
             {renderErrorMessage("title")}
           </div>
@@ -117,13 +210,18 @@ export default function ({ }) {
             <Label htmlFor="description" className="text-sm font-medium">
               {t("Description")}
             </Label>
-            <Textarea
-              id="description"
-              value={values.description}
-              onChange={(e) => updateForm("description", e.target.value)}
-              placeholder={t("Describe your place")}
-              rows={4}
-              className="mt-1"
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  id="description"
+                  {...field}
+                  placeholder={t("Describe your place")}
+                  rows={4}
+                  className="mt-1"
+                />
+              )}
             />
             {renderErrorMessage("description")}
           </div>
@@ -135,20 +233,25 @@ export default function ({ }) {
       content: (
         <div>
           <Label className="text-sm font-medium">{t("Add Images")}</Label>
-          <UserImageGallary
-            onChange={(v) =>
-              setFieldValue(
-                "images",
-                v.map(
-                  (path) =>
-                    supabase.storage.from("images").getPublicUrl(path).data
-                      .publicUrl
-                )
-              )
-            }
-            path={user.id + "/listing"}
+          <Controller
+            name="filesToUpload"
+            control={control}
+            render={({ field }) => (
+              <ImagePicker
+                files={field.value || []}
+                onFilesChange={(files) => {
+                  setValue("filesToUpload", files);
+                }}
+                oldImagesUrls={getValues("images") || []}
+                onRemoveOldImage={handleRemoveOldImage}
+              />
+            )}
           />
-          {renderErrorMessage("images")}
+          {(watchImages?.length === 0 && watchFilesToUpload?.length === 0) && (
+            <p className="text-sm bg-slate-100 text-destructive mt-1">
+              {t("At least one image is required")}
+            </p>
+          )}
         </div>
       ),
     },
@@ -157,54 +260,67 @@ export default function ({ }) {
       content: (
         <div>
           <Label className="text-sm font-medium">{t("Host Type")}</Label>
-          <RadioGroup
-            value={values.type}
-            onValueChange={(value) => updateForm("type", value)}
-            className="grid grid-cols-2 gap-4 mt-2"
-          >
-            {hostTypes.map(({ icon: Icon, label, value }) => (
-              <Label
-                key={value}
-                htmlFor={value}
-                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary"
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <RadioGroup
+                value={field.value}
+                onValueChange={field.onChange}
+                className="grid grid-cols-2 gap-4 mt-2"
               >
-                <RadioGroupItem value={value} id={value} className="sr-only" />
-                <Icon className="mb-3 h-6 w-6" />
-                {t(label)}
-              </Label>
-            ))}
-          </RadioGroup>
+                {hostTypes.map(({ icon: Icon, label, value }) => (
+                  <Label
+                    key={value}
+                    htmlFor={value}
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary"
+                  >
+                    <RadioGroupItem value={value} id={value} className="sr-only" />
+                    <Icon className="mb-3 h-6 w-6" />
+                    {t(label)}
+                  </Label>
+                ))}
+              </RadioGroup>
+            )}
+          />
+          {renderErrorMessage("type")}
         </div>
       ),
     },
-
     {
       title: t("Amenities"),
       content: (
         <div className="overflow-y-auto touch-pan-y scroll-smooth">
           <Label className="text-sm font-medium">{t("Amenities")}</Label>
-          <div className="grid grid-cols-2 gap-2 mt-2 ">
-            {amenities.map((item) => (
-              <div key={item} className="flex items-center space-x-2">
-                <Checkbox
-                  id={item}
-                  checked={values.amenities.includes(item)}
-                  onCheckedChange={(checked) => {
-                    const updatedAmenities = checked
-                      ? [...values.amenities, item]
-                      : values.amenities.filter((i) => i !== item);
-                    updateForm("amenities", updatedAmenities);
-                  }}
-                />
-                <label
-                  htmlFor={item}
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  {t(item)}
-                </label>
+          <Controller
+            name="amenities"
+            control={control}
+            render={({ field }) => (
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {amenities.map((item) => (
+                  <div key={item.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={item.id}
+                      checked={field.value?.includes(item.id)}
+                      onCheckedChange={(checked) => {
+                        const updatedAmenities = checked
+                          ? [...(field.value || []), item.id]
+                          : (field.value || []).filter((i) => i !== item.id);
+                        setValue("amenities", updatedAmenities);
+                      }}
+                    />
+                    <label
+                      htmlFor={item.id}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {t(item.label)}
+                    </label>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            )}
+          />
+          {renderErrorMessage("amenities")}
         </div>
       ),
     },
@@ -212,26 +328,32 @@ export default function ({ }) {
       title: t("Location"),
       content: (
         <div>
-          <Label htmlFor="tags" className="text-sm font-medium">
+          <Label htmlFor="location" className="text-sm font-medium">
             {t("Location")}
           </Label>
           <div className="flex items-center space-x-2 mt-1">
-            <ListingPlacePicker
-              placeholder={values.place_name || t("Pick Location")}
-              onChange={(place) => {
-                if (place) {
-                  setFieldValue("place_name", place.place_name);
-                  setFieldValue("lat", place.place_point[0]);
-                  setFieldValue("lng", place.place_point[1]);
-                  setFieldValue("address", { country: place.country, state: place.state, city: place.city, });
-                } else {
-                }
-              }}
-              place_point={
-                [values.lat, values.lng]
-              }
-            ></ListingPlacePicker>
-            {renderErrorMessage("place_name")}
+            <Controller
+              name="address"
+              control={control}
+              render={({ field }) => (
+                <ListingPlacePicker
+                  placeholder={Object.values( field.value).join(' ') || t("Pick Location")}
+                  onChange={(place) => {
+                    if (place) {
+                      setValue("lat", place.place_point[0]);
+                      setValue("lng", place.place_point[1]);
+                      setValue("address", { 
+                        country: place.country, 
+                        state: place.state, 
+                        city: place.city, 
+                      });
+                    }
+                  }}
+                  place_point={[getValues("lat"), getValues("lng")]}
+                />
+              )}
+            />
+            {renderErrorMessage("address")}
           </div>
         </div>
       ),
@@ -245,27 +367,32 @@ export default function ({ }) {
           </Label>
           <div className="flex items-center space-x-2 mt-1">
             <TagIcon className="h-5 w-5 text-gray-400" />
-            <TagsInput
-              id="tags"
-              placeholder="Enter tags separated by commas"
-              tags={values.tags}
-              setTags={(tags) => {
-                updateForm("tags", tags);
-              }}
-              className="flex-1"
+            <Controller
+              name="tags"
+              control={control}
+              render={({ field }) => (
+                <TagsInput
+                  id="tags"
+                  placeholder="Enter tags separated by commas"
+                  tags={field.value || []}
+                  setTags={(tags) => setValue("tags", tags)}
+                  className="flex-1"
+                />
+              )}
             />
           </div>
-          <div className="p-4 text-destructive text-sm ">
-            {Object.entries(errors).map((error) => {
-              console.log('error :>> ', error);
-              return (
-                <div className="text-start ">
-                  <strong>{error[0]}</strong>
-                  <p>{error[1] as string}</p>
+          
+          {/* Error summary display */}
+          {Object.keys(errors).length > 0 && (
+            <div className="p-4 text-destructive text-sm mt-4 bg-slate-100 rounded">
+              <h3 className="font-bold mb-2">Please fix the following errors:</h3>
+              {Object.entries(errors).map(([key, error]) => (
+                <div key={key} className="text-start mb-1">
+                  <strong>{key}:</strong> {error.message as string}
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       ),
     },
@@ -273,29 +400,29 @@ export default function ({ }) {
 
   return (
     <div className="container mx-auto px-4 pb-16 pt-2 max-w-md">
-      <div className="flex flex-col  grow w-full">
+      <div className="flex flex-col grow w-full">
         <div dir={"ltr"} className="">
           <div dir="ltr" className="flex justify-between mt-6 mb-2 ">
             <Button
               onClick={handlePrevStep}
-              disabled={step == 1 || form.isSubmitting}
+              disabled={step === 1 || isSubmitting}
               variant="outline"
               size="sm"
             >
               {t("Previous")}
             </Button>
             <Button
-              onClick={step == steps.length ? form.submitForm : handleNextStep}
+              onClick={step === steps.length ? handleSubmit(onFormSubmit) : handleNextStep}
               size="sm"
-              disabled={form.isSubmitting}
+              disabled={isSubmitting}
             >
-              {form.isSubmitting ? <IonSpinner className={"mx-1"} /> : null}
-              {step == steps.length ? t("Submit") : t("Next")}
+              {isSubmitting ? <IonSpinner className={"mx-1"} /> : null}
+              {step === steps.length ? t("Submit") : t("Next")}
             </Button>
           </div>
           <Stepper steps={steps.length} currentStep={step} onChange={setStep} />
         </div>
-        <div className="w-full pt-4">
+        <div className="w-full pt-1">
           <StepperContent
             steps={steps}
             currentStep={step}
@@ -303,9 +430,7 @@ export default function ({ }) {
             onPrevious={handlePrevStep}
           />
         </div>
-
       </div>
-
     </div>
   );
 }

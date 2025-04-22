@@ -37,7 +37,7 @@ export default function ({ onChange, selected, path }: GallaryProps) {
     addPhotos,
     handleDelete,
     uploadingNow,
-  } = useGallery({ path });
+  } = useGallery({ path, onChange });
   let currentlength = images ? images.length : 0;
 
   const onDrop = useCallback(
@@ -106,7 +106,7 @@ export default function ({ onChange, selected, path }: GallaryProps) {
                       className="relative group aspect-square"
                     >
                       <img
-                        src={publicPath(path)}
+                        src={path}
                         alt={path}
                         className="w-full h-full object-cover rounded-lg"
                       />
@@ -150,18 +150,14 @@ export default function ({ onChange, selected, path }: GallaryProps) {
   );
 }
 
-function publicPath(path: string, width?: number, height?: number) {
-  return supabase.storage.from("images").getPublicUrl(path, {
-    transform: { width: width || 200, height: height || 200 },
-  }).data.publicUrl;
-}
+
 
 const readFilePath = async (path: string) => {
   const contents = await Filesystem.readFile({ path });
   return contents;
 };
 
-function useGallery({ path }: { path: string }) {
+function useGallery({ path, onChange }: { path: string; onChange?: (v: string[]) => void }) {
   const [images, setImages] = useState<string[]>([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -191,9 +187,11 @@ function useGallery({ path }: { path: string }) {
   async function handleDelete(path: string) {
     const { error } = await deletefile(path, "images");
     if (!error) {
-      setImages(images.filter((img) => img != path));
+      const updatedImages = images.filter((img) => img != path);
+      setImages(updatedImages);
     }
   }
+  
   async function addPhotos(files: GalleryPhotos) {
     setUploadingNow(files.photos.length);
 
@@ -212,9 +210,9 @@ function useGallery({ path }: { path: string }) {
           );
         })
       );
-      let newPaths = uploadResults.map((res) => res.path);
-      // setImages(images);
-      fetch();
+      const newPaths = uploadResults.map((res) => res.path).filter(Boolean);
+      const updatedImages = [...images, ...newPaths];
+      setImages(updatedImages);
     } catch (error) {
       console.log("Error from image uploads:", error);
       setError(error);
@@ -222,6 +220,7 @@ function useGallery({ path }: { path: string }) {
       setUploadingNow(0);
     }
   }
+  
   async function addFiles(files: File[]) {
     setUploadingNow(files.length);
 
@@ -233,11 +232,9 @@ function useGallery({ path }: { path: string }) {
           return uploadfile("images", file, filepath, "image/" + format);
         })
       );
-      let pathes = uploadResults.map((res) => res.path);
-      let errors = uploadResults.map((res) => res.error);
-      console.log("newPaths errors:>> ", pathes, errors);
-      // setImages(images.concat(pathes));
-      fetch();
+      const newPaths = uploadResults.map((res) => res.path).filter(Boolean);
+      const updatedImages = [...images, ...newPaths];
+      setImages(updatedImages);
     } catch (error) {
       console.log("Error from image uploads:", error);
       setError(error);

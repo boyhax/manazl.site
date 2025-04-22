@@ -4,6 +4,7 @@ import { User, updateUser } from "src/lib/db/profile";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import supabase from "../lib/supabase";
+import { isPlatform } from "@ionic/react";
 
 export var session: Session;
 interface Props {
@@ -38,7 +39,7 @@ export function authSubscripe(navigate) {
       // ) {
 
       // }
-      updateToken();
+      isPlatform('hybrid')&& updateToken();
       auth.setState({
         session,
         user: { ...session.user.user_metadata, ...session.user } as any,
