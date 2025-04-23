@@ -20,6 +20,7 @@ import { formatDate } from "src/lib/utils/formatDate";
 import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger } from "src/components/ui/select";
 import options from "src/lib/db/options";
 import Nav from "src/layout/nav";
+import SearchModal from "src/components/SearchModal";
 
 
 export default function () {
@@ -35,32 +36,9 @@ export default function () {
   return (
     <Page>
       <div className={"flex flex-col  items-center mt-4 w-full "}>
-        <div
-          className={
-            "flex flex-row relative   w-full  mx-6  max-w-sm   items-center gap-1 justify-between rounded-full border shadow-sm border-slate-500  p-2"
-          }
-        >
-          <BiSearch size={"1.5rem"} />
-          <div className={"flex grow h-full items-center flex-row "}>
-            <Dbsearch
-              placeholder={filter.place_name || t('Search city, hotel ..')}
-              className={"    w-full border-none ring-0 outline-none"}
-              onChange={(value) => {
-                const [lng, lat] = JSON.parse(value.point).coordinates;
-                updateFilter({
-                  place_name: value.name,
-                  latlng: { lat, lng },
-                });
-              }}
-            />
-           
-          </div>
-
-        </div>
+        <SearchModal filter={filter} updateFilter={updateFilter} />
         <Nav />
         <FilterBar />
-
-
       </div>
       <div className={"h-5"} />
       <div dir={"ltr"} className={"flex flex-row h-full"}>

@@ -98,7 +98,7 @@
     "zustand": "^4.5.5"
   },
   "scripts": {
-    "start": "vite -m development",
+    "start": "vite",
     "start local": "vite -m localhost",
     "start admin": "vite -m admin",
     "build": " npx vite build",

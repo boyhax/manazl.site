@@ -32,7 +32,7 @@ export const listingSchema = z.object({
   type: z.string({ required_error: 'Type is required' }),
   filesToUpload: z.array(z.any()).optional(),
   imagesToDelete: z.array(z.string()).optional(),
-  images: z.array(z.string()).min(1, { message: 'At least one image is required' }),
+  images: z.array(z.string()),
   lat: z.number({ required_error: 'Latitude is required' }),
   lng: z.number({ required_error: 'Longitude is required' }),
   address: z.object({

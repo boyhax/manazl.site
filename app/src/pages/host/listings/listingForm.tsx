@@ -5,13 +5,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { IonSpinner } from "@ionic/react";
-import { useTranslate } from "@tolgee/react";
-import {
-  BedDoubleIcon,
-  BuildingIcon, HomeIcon,
-  TagIcon,
-  TentIcon
-} from "lucide-react";
+import { useTolgee, useTranslate } from "@tolgee/react";
+import { TagIcon } from "lucide-react";
 import { useState } from "react";
 import ListingPlacePicker from "src/components/ListingPlacePicker";
 import { Stepper, StepperContent } from "src/components/stepper";
@@ -22,77 +17,8 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { listingSchema } from "./editListing";
-
-export const hostTypes = [
-  { id: 1, icon: HomeIcon, label: "Suite", value: "suite" },
-  { id: 2, icon: BuildingIcon, label: "Villa", value: "villa" },
-  { id: 3, icon: BedDoubleIcon, label: "Room", value: "room" },
-  { id: 4, icon: TentIcon, label: "Camp", value: "camp" },
-  { id: 5, icon: HomeIcon, label: "Apartment", value: "apartment" },
-  { id: 6, icon: HomeIcon, label: "House", value: "house" },
-  { id: 7, icon: HomeIcon, label: "Chalet", value: "chalet" },
-  { id: 8, icon: HomeIcon, label: "Cabin", value: "cabin" },
-];
-
-export const amenities = [
-  {
-    id: '1', label: "Wi-Fi", label_ar: "Wi-Fi", icon: "wifi",
-  },
-  {
-    id: '2', label: "TV", label_ar: "TV", icon: "tv",
-  },
-  {
-    id: '3', label: "Kitchen", label_ar: "Kitchen", icon: "kitchen",
-  },
-  {
-    id: '4', label: "Washer", label_ar: "Washer", icon: "washer",
-  },
-  {
-    id: '5', label: "Free parking", label_ar: "Free parking", icon: "parking",
-  },
-  {
-    id: '6', label: "Paid parking", label_ar: "Paid parking", icon: "parking",
-  },
-  {
-    id: '7', label: "Air conditioning", label_ar: "Air conditioning", icon: "ac",
-  },
-  {
-    id: '8', label: "Dedicated workspace", label_ar: "Dedicated workspace", icon: "workspace",
-  },
-  {
-    id: '9', label: "Pool", label_ar: "Pool", icon: "pool",
-  },
-  {
-    id: '10', label: "Hot tub", label_ar: "Hot tub", icon: "hot_tub",
-  },
-  {
-    id: '11', label: "Patio", label_ar: "Patio", icon: "patio",
-  },
-  {
-    id: '12', label: "BBQ grill", label_ar: "BBQ grill", icon: "bbq_grill",
-  },
-  {
-    id: '13', label: "Outdoor dining area", label_ar: "Outdoor dining area", icon: "outdoor_dining",
-  },
-  {
-    id: '14', label: "Fire pit", label_ar: "Fire pit", icon: "fire_pit"
-  },
-  {
-    id: '15', label: "Gym", label_ar: "Gym", icon: "gym"
-  },
-  {
-    id: '16', label: "Spa", label_ar: "Spa", icon: "spa"
-  },
-  {
-    id: '17', label: "Pet friendly", label_ar: "Pet friendly", icon: "pet_friendly"
-  },
-  {
-    id: '18', label: "Breakfast included", label_ar: "Breakfast included", icon: "breakfast_included"
-  },
-  {
-    id: '19', label: "Family friendly", label_ar: "Family friendly", icon: "family_friendly"
-  },
-];
+import { propertyCategories } from "src/lib/data/categories";
+import { amenities } from "src/lib/data/amenities";
 
 export type ListingFormData = z.infer<typeof listingSchema>;
 
@@ -119,7 +45,8 @@ export default function ListingForm({ initialValues = defaultValues, onSubmit, i
   const user = auth((s) => s.user);
   const [step, setStep] = useState(1);
   const { t } = useTranslate();
-
+  const { getLanguage } = useTolgee()
+  const lang = getLanguage() || "en";
   const {
     control,
     handleSubmit,
@@ -256,10 +183,10 @@ export default function ListingForm({ initialValues = defaultValues, onSubmit, i
       ),
     },
     {
-      title: t("Host Type"),
+      title: t("Property Category"),
       content: (
         <div>
-          <Label className="text-sm font-medium">{t("Host Type")}</Label>
+          <Label className="text-sm font-medium">{t("Property Category")}</Label>
           <Controller
             name="type"
             control={control}
@@ -269,7 +196,7 @@ export default function ListingForm({ initialValues = defaultValues, onSubmit, i
                 onValueChange={field.onChange}
                 className="grid grid-cols-2 gap-4 mt-2"
               >
-                {hostTypes.map(({ icon: Icon, label, value }) => (
+                {propertyCategories.map(({ icon: Icon, label, label_ar, value, slug }) => (
                   <Label
                     key={value}
                     htmlFor={value}

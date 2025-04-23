@@ -36,9 +36,7 @@ import HostRoute from "./pages/host/HostRoute";
 import PlayGround from "./pages/playground";
 import { ErrorMessage } from "./components/errorMessage";
 import AvailablePage from "./pages/availablePage";
-import RealsSale from "./pages/Home/reals-sale";
-import RealsRenting from "./pages/Home/reals-renting";
-import LandsSale from "./pages/Home/lands-sale";
+
 
 export const ErrorBoundary = () => {
   let error = useRouteError();
@@ -80,18 +78,7 @@ export const router = createBrowserRouter([
             path: "/",
             element: <Home />,
           },
-          {
-            path: "/reals-renting",
-            element: <RealsRenting />,
-          },
-          {
-            path: "/reals-sale",
-            element: <RealsSale />,
-          },
-          {
-            path: "/lands-sale",
-            element: <LandsSale />,
-          },
+       
           {
             path: "/posts",
             element: <PostsPage />,

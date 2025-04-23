@@ -38,7 +38,6 @@ import {
 } from "src/components/ui/sheet";
 import { Badge } from "src/components/ui/badge";
 import propertyCategories from "src/lib/data/categories";
-import SearchModal from "src/components/SearchModal";
 
 export default function () {
   const scrrenlarge = useMediaQuery("(min-width: 768px)");
@@ -52,8 +51,42 @@ export default function () {
 
   return (
     <Page>
-      <div className={"flex flex-col items-center mt-4 px-4 w-full"}>
-        <SearchModal filter={filter} updateFilter={updateFilter} />
+      <div className={"flex flex-col items-center mt-4 w-full"}>
+        <div className={"flex flex-row relative w-full mx-6 max-w-sm items-center gap-1 justify-between rounded-full border shadow-sm border-slate-500 p-2"}>
+          
+          <BiSearch size={"1.5rem"} />
+          <div className={"flex grow h-full items-center flex-row"}>
+            <Dbsearch
+              placeholder={filter.place_name || t('Search city, hotel ..')}
+              className={"w-full border-none ring-0 outline-none"}
+              // onSuggetions={(suggetions) => {
+              //   const [lng, lat] = JSON.parse(value.point).coordinates;
+              //   updateFilter({
+              //     place_name: value.name,
+              //     latlng: { lat, lng },
+              //   });
+              // }}
+            />
+            {filter.place_name && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className=" end-2 "
+                onClick={() => {
+                  updateFilter({
+                    place_name: undefined,
+                    latlng: undefined,
+                  });
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+
+
+          </div>
+          <FilterButtons />
+        </div>
         <Nav />
       </div>
       <div className={"h-5"} />
