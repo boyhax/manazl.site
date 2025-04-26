@@ -5,7 +5,9 @@
   "webDir": "dist",
   "cordova": {},
   "loggingBehavior": "debug",
-
+  "server":{
+    "hostname":"m.manazl.site"
+  },
   "config":{
     "android": {
       "flavor": "dev"

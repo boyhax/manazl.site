@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useTranslate } from "@tolgee/react";
-import { MapPin, Calendar, ArrowRight, X, CheckCircle2, Search } from "lucide-react";
+import { MapPin, ArrowRight, X, Search } from "lucide-react";
 import { addDays, format } from "date-fns";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -21,7 +22,6 @@ import propertyCategories from "src/lib/data/categories";
 import { listingfilter } from "src/lib/db/listings";
 import { getPopularDestinations, OmanDestination } from "src/lib/data/omanDestinations";
 import { cn } from "src/lib/utils";
-import { Input } from "@/components/ui/input";
 
 interface SearchModalProps {
   filter: listingfilter & { map; place_name: string };
@@ -35,7 +35,7 @@ export default function SearchModal({ filter, updateFilter }: SearchModalProps) 
   const [activeTab, setActiveTab] = useState<string>("location");
   const [popularDestinations, setPopularDestinations] = useState<OmanDestination[]>([]);
   const [dbSuggestions, setDbSuggestions] = useState<SearchItem[]>([]);
-  
+
   // Track selections in state for a smooth UX
   const [location, setLocation] = useState<{ name: string; point: string }>({
     name: filter.place_name || "",
@@ -69,16 +69,14 @@ export default function SearchModal({ filter, updateFilter }: SearchModalProps) 
       name: destination.name,
       point: JSON.stringify(destination.point)
     });
-    
-    // Automatically move to dates tab after selecting location
-    setActiveTab("dates");
+
+    // Automatically move to category tab after selecting location
+    setActiveTab("category");
   };
 
- 
-
   // Handle suggestions from Dbsearch
-  const handleDbsearchChange = ( suggestions: SearchItem[]) => {
-     if (suggestions) {
+  const handleDbsearchChange = (suggestions: SearchItem[]) => {
+    if (suggestions) {
       setDbSuggestions(suggestions);
     }
   };
@@ -89,13 +87,13 @@ export default function SearchModal({ filter, updateFilter }: SearchModalProps) 
     if (location.name && location.point) {
       try {
         // Parse the point data
-        const pointData = typeof location.point === 'string' 
-          ? JSON.parse(location.point) 
+        const pointData = typeof location.point === 'string'
+          ? JSON.parse(location.point)
           : location.point;
-        
+
         const coordinates = pointData.coordinates;
         const [lng, lat] = coordinates;
-        
+
         updateFilter({
           place_name: location.name,
           latlng: { lat, lng },
@@ -107,7 +105,7 @@ export default function SearchModal({ filter, updateFilter }: SearchModalProps) 
         console.error("Invalid point format", e);
       }
     }
-    
+
     setOpen(false);
   };
 
@@ -119,17 +117,17 @@ export default function SearchModal({ filter, updateFilter }: SearchModalProps) 
   ].reduce((a, b) => a + b, 0);
 
   // Filter destinations based on search query
-  const filteredDestinations = searchQuery 
-    ? popularDestinations.filter(dest => 
-        dest.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        dest.region.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        dest.arabicName.includes(searchQuery))
+  const filteredDestinations = searchQuery
+    ? popularDestinations.filter(dest =>
+      dest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      dest.region.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      dest.arabicName.includes(searchQuery))
     : popularDestinations;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <div className="flex flex-row relative w-full mx-auto items-center gap-1 rounded-full border shadow-sm border-slate-300 px-4 py-2 cursor-pointer">
+        <div className="flex flex-row relative w-full max-w-sm mx-auto items-center gap-1 rounded-full border shadow-sm border-slate-300 px-4 py-2 cursor-pointer">
           <div className="flex grow items-center">
             <Search className="h-4 w-4 text-muted-foreground mr-2" />
             <div>
@@ -141,7 +139,7 @@ export default function SearchModal({ filter, updateFilter }: SearchModalProps) 
               </div>
             </div>
           </div>
-          
+
           {activeFiltersCount > 0 && (
             <Badge variant="secondary" className="ml-auto h-5 py-0 px-2">
               {activeFiltersCount}
@@ -150,173 +148,213 @@ export default function SearchModal({ filter, updateFilter }: SearchModalProps) 
         </div>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden">
-        <DialogHeader className="px-4 pt-4 pb-2">
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden flex flex-col">
+        <DialogHeader className=" flex justify-between px-4 pt-4 pb-2 sticky top-0 bg-background z-10 shadow-sm">
           <DialogTitle className="text-lg">{t("Find your perfect place")}</DialogTitle>
+          <DialogClose className="absolute top-4 left-4 text-muted-foreground hover:text-primary transition-colors duration-200">
+            <X/>
+          </DialogClose>
         </DialogHeader>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0">
-            <TabsTrigger 
-              value="location" 
-              className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-primary data-[state=active]:bg-transparent"
-            >
-              {t("Where")}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="dates" 
-              className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-primary data-[state=active]:bg-transparent"
-            >
-              {t("When")}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="category" 
-              className="rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-primary data-[state=active]:bg-transparent"
-            >
-              {t("What")}
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="location" className="p-4 pt-2">
-            <div className="space-y-4">
-             
-              
-              {location.name && (
-                <div className="p-2 bg-muted/50 rounded-md flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-primary" />
-                    <span>{location.name}</span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setLocation({ name: "", point: "" })}
-                    className="h-8 px-2"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-             
-
-              <Dbsearch
-                placeholder={t("Custom location search...")}
-                className="w-full"
-                onSuggetions={handleDbsearchChange}
-              />
-              <div className="space-y-3">
-                <h3 className="text-sm font-medium">{t("Popular destinations in Oman")}</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {dbSuggestions.map((destination) => (
-                    <div
-                      key={destination.name}
-                      onClick={() => selectDestination(destination as any)}
-                      className={cn(
-                        "cursor-pointer rounded-md border p-2 transition-colors hover:bg-muted/50",
-                        location.name === destination.name ? "border-primary bg-muted/50" : "border-border"
-                      )}
-                    >
-                      <div className="flex flex-col">
-                        <span className="font-medium text-sm">{destination.name}</span>
-                        <span className="text-xs text-muted-foreground">{destination.region}</span>
-                      </div>
+        
+        <div className="flex-grow overflow-y-auto">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full flex flex-col h-full">
+            <TabsContent value="location" className="p-4 pt-2 flex-grow">
+              <motion.div 
+                className="space-y-4"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+              >
+                {location.name && (
+                  <div className="p-2 bg-muted/50 rounded-md flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-primary" />
+                      <span>{location.name}</span>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setLocation({ name: "", point: "" })}
+                      className="h-8 px-2"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+
+                <Dbsearch
+                  placeholder={t("Search for a location...")}
+                  className="w-full"
+                  onSuggetions={handleDbsearchChange}
+                />
+                
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium">{t("Popular destinations in Oman")}</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {dbSuggestions.map((destination) => (
+                      <div
+                        key={destination.name}
+                        onClick={() => selectDestination(destination as any)}
+                        className={cn(
+                          "cursor-pointer rounded-md border p-2 transition-colors hover:bg-muted/50",
+                          location.name === destination.name ? "border-primary bg-muted/50" : "border-border"
+                        )}
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm">{destination.name}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="category" className="p-4 pt-2 flex-grow">
+              <motion.div 
+                className="space-y-4"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+              >
+                <div className="flex justify-between items-center">
+                  <h3 className="text-sm font-medium">{t("Property Type")}</h3>
+                  {category && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setCategory("")}
+                      className="h-8 px-2"
+                    >
+                      <X className="h-4 w-4 mr-1" /> {t("Clear")}
+                    </Button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {propertyCategories.map((type) => (
+                    <Button
+                      key={type.slug}
+                      variant={category === type.slug ? "default" : "outline"}
+                      className="justify-start"
+                      onClick={() => setCategory(type.slug)}
+                    >
+                      <type.icon className="h-4 w-4 mr-2" />
+                      <span>{t(type.label)}</span>
+                    </Button>
                   ))}
                 </div>
-              </div>
-              
-            </div>
-            
-            <div className="flex justify-end mt-4">
-              <Button 
-                onClick={() => setActiveTab("dates")} 
-                disabled={!location.name || !location.point}
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="dates" className="p-4 pt-2 flex-grow">
+              <motion.div 
+                className="space-y-4"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
               >
-                {t("Next")} <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="dates" className="p-4 pt-2">
-            <div className="space-y-4">
-              {dateRange.from && dateRange.to && (
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-sm">
-                    {format(dateRange.from, "MMM dd")} - {format(dateRange.to, "MMM dd")}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setDateRange({
-                      from: new Date(),
-                      to: addDays(new Date(), 1)
-                    })}
-                    className="h-8 px-2"
-                  >
-                    <X className="h-4 w-4 mr-1" /> {t("Clear")}
-                  </Button>
-                </div>
-              )}
-              
-              <CalendarComponent
-                mode="range"
-                selected={dateRange}
-                onSelect={(range) => setDateRange(range as { from: Date; to: Date })}
-                className="rounded-md border"
-              />
-            </div>
-            
-            <div className="flex justify-between mt-4">
-              <Button variant="outline" onClick={() => setActiveTab("location")}>
-                {t("Back")}
-              </Button>
-              <Button onClick={() => setActiveTab("category")}>
-                {t("Next")} <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="category" className="p-4 pt-2">
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-sm font-medium">{t("Property Type")}</h3>
-                {category && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setCategory("")}
-                    className="h-8 px-2"
-                  >
-                    <X className="h-4 w-4 mr-1" /> {t("Clear")}
-                  </Button>
+                {dateRange.from && dateRange.to && (
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-sm">
+                      {format(dateRange.from, "MMM dd")} - {format(dateRange.to, "MMM dd")}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDateRange({
+                        from: new Date(),
+                        to: addDays(new Date(), 1)
+                      })}
+                      className="h-8 px-2"
+                    >
+                      <X className="h-4 w-4 mr-1" /> {t("Clear")}
+                    </Button>
+                  </div>
                 )}
-              </div>
-              
-              <div className="grid grid-cols-2 gap-2">
-                {propertyCategories.map((type) => (
-                  <Button
-                    key={type.slug}
-                    variant={category === type.slug ? "default" : "outline"}
-                    className="justify-start"
-                    onClick={() => setCategory(type.slug)}
-                  >
-                    <type.icon className="h-4 w-4 mr-2" />
-                    <span>{t(type.label)}</span>
-                  </Button>
-                ))}
-              </div>
-            </div>
+
+                <CalendarComponent
+                  mode="range"
+                  selected={dateRange}
+                  onSelect={(range) => setDateRange(range as { from: Date; to: Date })}
+                  className="rounded-md border"
+                />
+              </motion.div>
+            </TabsContent>
             
-            <div className="flex justify-between mt-4">
-              <Button variant="outline" onClick={() => setActiveTab("dates")}>
-                {t("Back")}
-              </Button>
-              <Button onClick={applySearch}>
+            {/* Tabs at bottom */}
+            <TabsList className="w-full justify-between rounded-none border-t bg-background p-0 sticky bottom-[72px] shadow-md">
+              <TabsTrigger
+                value="location"
+                className="flex-1 rounded-none py-3 transition-all data-[state=active]:border-t-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:font-medium"
+              >
+                <div className="flex items-center ">
+                  <div className="relative">
+                    <MapPin className="h-5 w-5 mb-1" />
+                    {location.name && (
+                      <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-white">
+                        ✓
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xs">{t("Where")}</span>
+                </div>
+              </TabsTrigger>
+              <TabsTrigger
+                value="category"
+                className="flex-1 rounded-none py-3 transition-all data-[state=active]:border-t-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:font-medium"
+              >
+                <div className="flex  items-center">
+                  <div className="relative">
+                    <svg className="h-5 w-5 mb-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3 9.5L12 4L21 9.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M19 13V19.4C19 19.7314 18.7314 20 18.4 20H5.6C5.26863 20 5 19.7314 5 19.4V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {category && (
+                      <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-white">
+                        ✓
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xs">{t("What")}</span>
+                </div>
+              </TabsTrigger>
+              <TabsTrigger
+                value="dates"
+                className="flex-1 rounded-none py-3 transition-all data-[state=active]:border-t-2 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-primary data-[state=active]:font-medium"
+              >
+                <div className="flex  items-center">
+                  <div className="relative">
+                    <svg className="h-5 w-5 mb-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="3" y="6" width="18" height="15" rx="2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M3 10H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M8 3V7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M16 3V7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {dateRange.from && dateRange.to && (
+                      <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-white">
+                        ✓
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xs">{t("When")}</span>
+                </div>
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Big search button that's always visible */}
+            <div className="p-4 sticky bottom-0 bg-background border-t">
+              <Button 
+                onClick={applySearch} 
+                className="w-full py-6 text-lg font-semibold rounded-xl bg-gradient-to-r from-primary to-primary/80 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                size="lg"
+              >
+                <Search className="h-5 w-5" />
                 {t("Search")}
               </Button>
             </div>
-          </TabsContent>
-        </Tabs>
+          </Tabs>
+        </div>
       </DialogContent>
     </Dialog>
   );

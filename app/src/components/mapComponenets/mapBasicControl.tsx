@@ -57,13 +57,13 @@ export function MapControls({
   return (
     <div
       className={cn(
-        "absolute z-[1000] flex items-end flex-col gap-2",
+        "absolute z-[1000] flex items-end  gap-2",
         horizontal === "left" ? "left-4" : "right-4",
         vertical === "top" ? "top-4" : "bottom-4"
       )}
     >
       <MapSearchBar />
-      <div className="flex flex-col   gap-2 w-fit">
+      {/* <div className="flex flex-col   gap-2 w-fit"> */}
 
         <button
           onClick={locate}
@@ -72,7 +72,7 @@ export function MapControls({
         >
           <BiCurrentLocation className="text-xl text-gray-700" />
         </button>
-      </div>
+      {/* </div> */}
     </div>
   )
 }

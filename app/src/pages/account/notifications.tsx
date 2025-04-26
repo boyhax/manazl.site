@@ -30,13 +30,11 @@ const NotificationsView: FunctionComponent<MyListingsProps> = () => {
       .eq("user_id", session?.user?.id)
   );
   console.log("notification data :>> ", data);
-  const [alert] = useIonAlert();
 
-  console.log("Notifications :>> ", data);
   return (
-    <div className="container mx-auto px-4 py-8 overflow-y-auto pb-16 scroll-smooth">
+    <div className="container mx-auto px-4 py-2 overflow-y-auto scroll-smooth">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold mb-6">My Bookings</h1>
+        <h1 className="text-2xl font-bold mb-6">{t("Notifications")}</h1>
         <BackButton />
       </div>
       <div className={"flex flex-col   gap-1 w-full lg:p-5 md:p-3"}>

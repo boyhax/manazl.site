@@ -291,11 +291,27 @@
   "Active Listings": "Active Listings",
   "Account Type": "Account Type",
   "Liked Listings": "Liked Listings",
-  
-    "Select Dates": "Select Dates",
-    "Choose check-in and check-out dates": "Choose check-in and check-out dates",
-    "Close": "Close",
-    "Filters & Sort": "Filters & Sort",
-    "Refine your search results": "Refine your search results"
 
+  "Select Dates": "Select Dates",
+  "Choose check-in and check-out dates": "Choose check-in and check-out dates",
+  "Close": "Close",
+  "Filters & Sort": "Filters & Sort",
+  "Refine your search results": "Refine your search results",
+  "Where to?": "Where to?",
+  "Anywhere": "Anywhere",
+  "Any dates": "Any dates",
+  "Find your perfect place": "Find your perfect place",
+  "Where": "Where",
+  "When": "When",
+  "What": "What",
+  "Custom location search...": "Custom location search...",
+  "Popular destinations in Oman": "Popular destinations in Oman",
+  "Clear": "Clear",
+  "Back": "Back",
+  "House": "House",
+  "Chalet": "Chalet",
+  "Cabin": "Cabin",
+  "You need to enable JavaScript to see this map.": "You need to enable JavaScript to see this map.",
+  "Check Availability": "Check Availability",
+  "Select currency": "Select currency"
 }

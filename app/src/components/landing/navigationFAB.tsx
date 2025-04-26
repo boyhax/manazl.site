@@ -24,7 +24,7 @@ const NavigationFAB: React.FC = () => {
             <div className="fixed bottom-6 right-6 z-50">
                 <Button
                     size="icon"
-                    className="h-14 w-14 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90"
+                    className="h-11 w-11 rounded-full shadow-lg bg-primary text-primary-foreground hover:bg-primary/90"
                     onClick={toggleMenu}
                     aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
                 >

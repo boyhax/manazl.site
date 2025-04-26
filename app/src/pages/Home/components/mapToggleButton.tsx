@@ -16,13 +16,14 @@ export default function () {
       className={`absolute md:hidden  bottom-10 flex justify-center items-center transition-all duration-500  ${visible ? "" : "translate-y-[500%] block opacity-0 scale-0"}`}
     >
       <Button
+        size="sm"
         onClick={() =>
           updateFilter(filter.map ? { map: undefined } : { map: true })
         }
         className={`rounded-lg  border-foreground border shadow-md   flex flex-row items-center gap-3 py-1 px-4 `}
       >
-        {filter.map ? <BiListUl size="2rem" /> : <CiMap size="2rem" />}
-        {filter.map ? t("list") : t("Map")}
+        {filter.map ? <BiListUl size="1.5rem" /> : <CiMap size="1.5rem" />}
+        {/* {filter.map ? t("list") : t("Map")} */}
       </Button>
     </div>
   );

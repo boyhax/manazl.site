@@ -1,10 +1,11 @@
 import { IonContent, IonProgressBar, useIonToast } from "@ionic/react";
 import { useTranslate } from "@tolgee/react";
-import { format } from "date-fns";
-import { Bell, Calendar, Heart, Home, Settings, User } from "lucide-react";
+import { format, formatDistance } from "date-fns";
+import { Bell, Calendar, Heart, Home, Settings, User, AlertCircle } from "lucide-react";
 import { useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,6 +26,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useQuery } from "@tanstack/react-query";
@@ -66,7 +69,6 @@ async function accountLoader() {
 
 export default function AccountPage() {
   const user = auth((s) => s.user);
-  // const { data, loading, error } = useFetch(accountLoader);
   const { data, isLoading, error } = useQuery({
     queryKey: ["account", user.id],
     queryFn: accountLoader,
@@ -75,6 +77,8 @@ export default function AccountPage() {
   const { filter, setFilter } = useSearchfilter<{ view: string | undefined }>();
   const [name, setName] = useState(user.full_name);
   const view = filter.view || "overview";
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
 
   const [reservationsSection, setreservationsSection] = useState<
     "self" | "host" | "all"
@@ -104,24 +108,131 @@ export default function AccountPage() {
     ...(listingReservations || []),
   ].filter(filerreservation);
 
-  console.log("data,error :>> ", data, error);
   function handleProfileSave() {
     if (name && name.length > 5) {
       updateProfile({ full_name: name });
-      toast("Profile updated successfully", 2000);
+      toast({
+        message: t("Profile updated successfully"),
+        duration: 2000,
+        position: "bottom",
+        color: "success"
+      });
     } else {
-      toast("Name should be more than 5 characters", 2000);
+      toast({
+        message: t("Name should be at least 5 characters"),
+        duration: 2000,
+        position: "bottom",
+        color: "warning"
+      });
     }
   }
 
-  if (isLoading) return <IonProgressBar type="indeterminate" />;
-
   const isHost = data && data.listings && data.listings.length > 0;
+
+  // Fetch notifications
+  useState(() => {
+    async function fetchNotifications() {
+      if (!user || !user.id) return;
+      
+      try {
+        setNotificationsLoading(true);
+        const { data: notificationData, error } = await supabase
+          .from("notifications")
+          .select("*")
+          .limit(10)
+          .order("created_at", { ascending: false })
+          .eq("user_id", user.id);
+          
+        if (!error && notificationData) {
+          setNotifications(notificationData);
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      } finally {
+        setNotificationsLoading(false);
+      }
+    }
+    
+    fetchNotifications();
+  }, [user]);
+
+  // Account stat badges data
+  const statBadges = [
+    {
+      label: t("Upcoming Reservations"),
+      value: userReservations?.length || 0,
+      icon: <Calendar className="h-4 w-4 mr-1" />,
+      color: "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+      href: "/reservations"
+    },
+    {
+      label: t("Active Listings"),
+      value: data?.listings?.length || 0,
+      icon: <Home className="h-4 w-4 mr-1" />,
+      color: "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300",
+      href: "/account?view=listings"
+    },
+    {
+      label: t("Account Type"),
+      value: isHost ? t("Host") : t("Guest"),
+      icon: <User className="h-4 w-4 mr-1" />,
+      color: "bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300",
+      href: "#"
+    },
+    {
+      label: t("Liked Listings"),
+      value: userLikedListingsCount,
+      icon: <Heart className="h-4 w-4 mr-1" />,
+      color: "bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300",
+      href: "#"
+    },
+    {
+      label: t("Notifications"),
+      value: userNotificationsCount,
+      icon: <Bell className="h-4 w-4 mr-1" />,
+      color: "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300",
+      href: "/account/notifications"
+    }
+  ];
+
+  const markAsRead = async (notificationId) => {
+    try {
+      const { data, error } = await supabase
+        .from("notifications")
+        .update({ received: true })
+        .eq("id", notificationId);
+      
+      if (error) throw error;
+      
+      // Update the local state
+      setNotifications(prevNotifications => 
+        prevNotifications.map(notification => 
+          notification.id === notificationId 
+            ? { ...notification, received: true } 
+            : notification
+        )
+      );
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+
+  const handleNotificationClick = (notification) => {
+    // Mark as read
+    if (!notification.received) {
+      markAsRead(notification.id);
+    }
+    
+    // Navigate if URL exists
+    if (notification.url) {
+      navigate(notification.url);
+    }
+  };
 
   return (
     <Page>
       <IonContent>
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 max-w-md mx-auto">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 mx-auto">
           <div className="container mx-auto p-4 space-y-6">
             <header className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex items-center justify-between">
               <div className="flex items-center space-x-4">
@@ -143,7 +254,7 @@ export default function AccountPage() {
                 <SheetTrigger asChild>
                   <Button variant="outline">
                     <Settings className="h-4 w-4 mr-2" />
-                    {t("Edit Profile")}
+                   <span className="hidden sm:block"> {t("Edit Profile")}</span> 
                   </Button>
                 </SheetTrigger>
                 <SheetContent>
@@ -204,75 +315,98 @@ export default function AccountPage() {
                   {t("Reservations")}
                 </TabsTrigger>
                 <TabsTrigger value="listings">{t("Listings")}</TabsTrigger>
-                {/* <TabsTrigger value="settings">Settings</TabsTrigger> */}
               </TabsList>
 
               <TabsContent value="overview" className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>{t("Account Overview")}</CardTitle>
-                    <CardDescription>
-                      {t("Quick summary of your account")}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="flex items-center space-x-4 bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
-                        <Calendar className="h-8 w-8 text-blue-500" />
-                        <div>
-                          <p className="font-semibold">
-                            {userReservations?.length || 0}
-                          </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {t("Upcoming Reservations")}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-4 bg-green-50 dark:bg-green-900 p-4 rounded-lg">
-                        <Home className="h-8 w-8 text-green-500" />
-                        <div>
-                          <p className="font-semibold">
-                            {data.listings?.length || 0}
-                          </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {t("Active Listings")}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-4 bg-purple-50 dark:bg-purple-900 p-4 rounded-lg">
-                        <User className="h-8 w-8 text-purple-500" />
-                        <div>
-                          <p className="font-semibold">
-                            {isHost ? "Host" : "Guest"}
-                          </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {t("Account Type")}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-4 bg-red-50 dark:bg-red-900 p-4 rounded-lg">
-                        <Heart className="h-8 w-8 text-red-500" />
-                        <div>
-                          <p className="font-semibold">
-                            {userLikedListingsCount}
-                          </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {t("Liked Listings")}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-4 bg-yellow-50 dark:bg-yellow-900 p-4 rounded-lg">
-                        <Bell className="h-8 w-8 text-yellow-500" />
-                        <div>
-                          <p className="font-semibold">
-                            {userNotificationsCount}
-                          </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {t("Notifications")}
-                          </p>
-                        </div>
-                      </div>
+                <div className="mb-6">
+                  <ScrollArea className="w-full whitespace-nowrap pb-3">
+                    <div className="flex w-max space-x-4 p-1">
+                      {statBadges.map((badge, index) => (
+                        <Link to={badge.href} key={index}>
+                          <div className={`inline-flex items-center rounded-lg px-3 py-2 text-sm font-medium ${badge.color}`}>
+                            {badge.icon}
+                            <span className="mr-1">{badge.value}</span>
+                            <span>{badge.label}</span>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
+                    <ScrollBar orientation="horizontal" />
+                  </ScrollArea>
+                </div>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center">
+                        <Bell className="h-5 w-5 mr-2" />
+                        {t("Recent Notifications")}
+                      </CardTitle>
+                      <CardDescription>
+                        {t("Your latest updates and notifications")}
+                      </CardDescription>
+                    </div>
+                    <Link to="/account/notifications">
+                      <Button variant="outline" size="sm">
+                        {t("View all")}
+                      </Button>
+                    </Link>
+                  </CardHeader>
+                  <CardContent>
+                    {notificationsLoading ? (
+                      <div className="space-y-3">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="flex items-center space-x-4 p-3 rounded-lg border">
+                            <Skeleton className="h-2 w-2 rounded-full" />
+                            <div className="space-y-2 flex-1">
+                              <Skeleton className="h-5 w-3/4" />
+                              <Skeleton className="h-4 w-1/2" />
+                              <Skeleton className="h-3 w-1/4" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : notifications && notifications.length > 0 ? (
+                      <div className="grid gap-4">
+                        {notifications.map((notification, index) => (
+                          <div
+                            key={index}
+                            className={`p-4 rounded-lg cursor-pointer ${
+                              !notification.received ? "bg-blue-50 dark:bg-blue-900/20" : "bg-gray-50 dark:bg-gray-800/50"
+                            }`}
+                            onClick={() => handleNotificationClick(notification)}
+                          >
+                            <div className="grid grid-cols-[25px_1fr] items-start gap-3">
+                              <div className="relative mt-1">
+                                <span className={`flex h-2 w-2 rounded-full ${
+                                  !notification.received ? "bg-blue-500" : "bg-gray-300"
+                                }`} />
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-sm font-medium leading-none">
+                                  {notification.title}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  {notification.body}
+                                </p>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  {formatDistance(
+                                    new Date(notification.created_at),
+                                    new Date(),
+                                    { addSuffix: true }
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-10">
+                        <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                        <p className="text-muted-foreground">{t("No notifications to display")}</p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -358,7 +492,6 @@ export default function AccountPage() {
           </div>
         </div>
       </IonContent>
-      <div className={"pb-16"} />
     </Page>
   );
 }

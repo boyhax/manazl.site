@@ -233,7 +233,7 @@ function check_available(
     .eq(`${key}.is_available`, true);
   // .eq(`${key}.count`, getDaysBetweenDates(start, end));
 }
-const select = `images,featured,address,title,likes,short_id,rating,id,description,likes!inner(count),user:profiles!inner(full_name,avatar_url),reviews(count(),rating.avg()),rooms:variants(id,type,available:room_availability(cost:cost.sum(),count()))`;
+const select = `images,type,featured,address,title,likes,short_id,rating,id,description,likes!inner(count),user:profiles!inner(full_name,avatar_url),reviews(count(),rating.avg()),rooms:variants(id,type,available:room_availability(cost:cost.sum(),count()))`;
 
 export async function getListings(filter: listingfilter) {
   let query: SupabaseFilterBuilder;
@@ -269,7 +269,7 @@ export async function getListings(filter: listingfilter) {
     );
     console.log("view search");
   } else {
-    query = supabase.from("listings").select("*", { count: "exact" });
+    query = supabase.from("listings").select(select, { count: "exact" });
     console.log("listing search");
   }
   function getRange(page: number, limit: number) {

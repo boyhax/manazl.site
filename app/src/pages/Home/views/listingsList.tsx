@@ -61,7 +61,7 @@ export default function () {
       onIonScroll={(e) =>
         e.detail.velocityY != 0 ? setVisible(e.detail.velocityY < 0) : null
       }
-      className={"scroll-smooth ion-padding mx-auto"}
+      className={"scroll-smooth  sm:mx-auto"}
     >
       <ScrollArea>
         {isLoading ? <IonProgressBar type={"indeterminate"} /> : null}
