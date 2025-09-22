@@ -1,0 +1,51 @@
+ion-chip .active {
+  --background: #00213f;
+  --color: #adefd1;
+}
+
+
+/* ion-fab {
+  margin-bottom: calc(50px + var(--ion-safe-area-bottom, 0));
+  @apply transition-all 
+} */
+.alert-button-inner{
+  color :var(--ion-text-color)
+}
+ion-page {
+  --padding-bottom: 56px;
+  
+}
+ion-content :last-child{
+  margin-bottom: var(--ion-safe-area-bottom,56px);
+}
+ion-textarea textarea {
+  height: 200px;
+}
+
+
+ .dialog-modal  {
+  --width: 300px;
+  --min-width: 250px;
+  --height: min(fit-content,500px);
+  --border-radius: 6px;
+  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+}
+
+ .dialog-modal h1 {
+  margin: 20px 20px 10px 20px;
+}
+
+ .dialog-modal ion-icon {
+  margin-right: 6px;
+
+  width: 48px;
+  height: 48px;
+
+  padding: 4px 0;
+
+  color: #aaaaaa;
+}
+
+ .dialog-modal .wrapper {
+  margin-bottom: 10px;
+}

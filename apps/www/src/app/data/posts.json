@@ -1,0 +1,37 @@
+{
+  "posts": [
+    {
+      "id": "1",
+      "title": "Top 10 Must-Visit Places in Muscat",
+      "slug": "top-10-must-visit-places-muscat",
+      "excerpt": "Discover the enchanting capital of Oman through its most iconic landmarks and hidden gems.",
+      "content": "<ul> <li>Muscat is a fascinating blend of traditional Arab culture and modern development.</li> <li>Visit the Sultan Qaboos Grand Mosque, a stunning architectural masterpiece.</li> <li>Explore the lively Mutrah Souq, filled with traditional Omani goods.</li> <li>Experience world-class performances at the Royal Opera House.</li> <li>Discover the history of Muscat through Al Jalali and Al Mirani forts.</li> <li>Take a scenic stroll along the Corniche for breathtaking seaside views.</li> <li>Relax at Qurum Beach, a popular spot for locals and tourists.</li> <li>Visit the Bait Al Zubair Museum to learn about Omani heritage.</li> <li>Explore the rugged beauty of the Al Hajar Mountains.</li> <li>Enjoy the vibrant food scene, from traditional Omani dishes to international cuisine.</li> </ul>",
+      "author": "Sarah Al-Balushi",
+      "date": "2025-02-10",
+      "imageUrl": "/images/blog/muscat-grand-mosque.jpg",
+      "tags": ["travel", "muscat", "culture"]
+    },
+    {
+      "id": "2",
+      "title": "A Weekend in Salalah: Nature's Paradise",
+      "slug": "weekend-in-salalah",
+      "excerpt": "Experience the tropical side of Oman in the southern jewel of Salalah.",
+      "content": "<ul> <li>Salalah transforms into a tropical paradise during the Khareef monsoon season.</li> <li>Visit Wadi Darbat for lush landscapes, waterfalls, and wildlife sightings.</li> <li>Explore the historic Al Baleed Archaeological Park, a UNESCO World Heritage site.</li> <li>Relax at Mughsail Beach, known for its dramatic blowholes and cliffs.</li> <li>Discover the famous frankincense trees and visit the Frankincense Land Museum.</li> <li>Take a trip to Ayn Athum and Ayn Razat, two stunning natural springs.</li> <li>Explore the caves and rock formations of Marneef Cave.</li> <li>Enjoy the stunning views from Ittin Mountain.</li> <li>Shop for local souvenirs and spices at Haffa Souq.</li> <li>Experience the unique blend of Arabian and tropical cultures in Salalah.</li> </ul>",
+      "author": "Mohammed Al-Habsi",
+      "date": "2025-02-08",
+      "imageUrl": "/images/blog/salalah-waterfalls.jpg",
+      "tags": ["travel", "salalah", "nature"]
+    },
+    {
+      "id": "3",
+      "title": "Desert Adventures: Exploring Wahiba Sands",
+      "slug": "desert-adventures-wahiba-sands",
+      "excerpt": "Your guide to experiencing the magical desert landscape of Wahiba Sands.",
+      "content": "<ul> <li>Wahiba Sands offers an authentic Arabian desert adventure.</li> <li>Experience thrilling dune bashing in a 4x4 vehicle.</li> <li>Ride a camel and explore the vast golden dunes.</li> <li>Watch a breathtaking sunset over the desert landscape.</li> <li>Stay overnight in a traditional Bedouin camp.</li> <li>Enjoy Omani hospitality with traditional food and music.</li> <li>Stargaze under the clear desert sky, away from city lights.</li> <li>Visit a Bedouin family to learn about their nomadic lifestyle.</li> <li>Take a sandboarding adventure on the towering dunes.</li> <li>Capture stunning photographs of the ever-changing desert scenery.</li> </ul>",
+      "author": "Ahmed Al-Rashdi",
+      "date": "2025-02-05",
+      "imageUrl": "/images/blog/wahiba-sands.jpg",
+      "tags": ["travel", "desert", "adventure"]
+    }
+  ]
+}

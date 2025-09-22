@@ -1,6 +1,0 @@
-packages:
-  - "www"
-  - "api"
-  - "app"
-  - "ui"
-  - "db"

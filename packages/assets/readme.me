@@ -1,0 +1,13 @@
+resources/
+├── icon-only.png
+├── icon-foreground.png
+├── icon-background.png
+├── splash.png
+└── splash-dark.png
+
+Icon files should be at least 1024px x 1024px.
+Splash screen files should be at least 2732px x 2732px.
+The format can be jpg or png.
+Then generate (which applies to your native projects or generates a PWA manifest file):
+
+npx @capacitor/assets generate --android
