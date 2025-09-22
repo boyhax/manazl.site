@@ -15,8 +15,6 @@
 # misc
 .DS_Store
 
-.env
-.env.*
 
 .vscode
 
@@ -29,5 +27,5 @@ resources/android/**/*
 
 pnpm-lock.yaml
 
-.env
+.env.*
 .vercel
