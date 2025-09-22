@@ -7,9 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
-    "app",
-    "db",
-    "ui"
+    "apps/*",
+    "packages/*"
   ],
   "keywords": [],
   "author": "",
