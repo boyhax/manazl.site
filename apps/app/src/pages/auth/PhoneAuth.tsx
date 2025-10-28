@@ -135,7 +135,7 @@ export default function PhoneAuth() {
   }
 
   return (
-    <div className="perspective-1000 w-full">
+    <div className="w-full">
       <div className={cn(
         "relative w-full transition-all duration-700 transform-style-preserve-3d",
         isFlipped ? "rotate-y-180" : ""
@@ -145,18 +145,18 @@ export default function PhoneAuth() {
           "w-full backface-hidden",
           isFlipped ? "invisible" : "visible"
         )}>
-          <form onSubmit={handleSendOtp} className="space-y-4">
+          <form onSubmit={handleSendOtp} className="space-y-6">
             <div className={cn(
               "space-y-2 transition-all duration-200",
               inputFocused ? "scale-105" : ""
             )}>
-              <Label htmlFor="phoneNumber">Phone</Label>
-              <div className="flex">
+              {/* <Label htmlFor="phoneNumber" className="text-base font-medium">Phone</Label> */}
+              <div className="flex gap-2">
                 <Select 
                   value={countryCode}
                   onValueChange={setCountryCode}
                 >
-                  <SelectTrigger className="w-[110px] mr-2 flex-shrink-0">
+                  <SelectTrigger className="w-[110px] rounded-lg border-gray-200 bg-gray-50 focus:ring-2 focus:ring-primary">
                     <SelectValue placeholder="+968" />
                   </SelectTrigger>
                   <SelectContent>
@@ -179,13 +179,14 @@ export default function PhoneAuth() {
                     onFocus={() => setInputFocused(true)}
                     onBlur={() => setInputFocused(false)}
                     required
+                    className="rounded-lg border-gray-200 bg-gray-50 focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
             </div>
             <Button 
               type="submit" 
-              className="w-full" 
+              className="w-full rounded-lg bg-primary text-white font-semibold py-2 shadow hover:bg-primary/90 transition"
               disabled={isLoading || !phoneNumber}
             >
               {isLoading ? "Sending..." : "Continue"}
@@ -198,11 +199,11 @@ export default function PhoneAuth() {
           "absolute top-0 left-0 w-full backface-hidden rotate-y-180",
           isFlipped ? "visible" : "invisible"
         )}>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <Button 
               variant="ghost" 
               size="sm" 
-              className="p-0"
+              className="p-0 text-primary hover:bg-transparent"
               onClick={() => setIsFlipped(false)}
               disabled={isLoading}
             >
@@ -213,7 +214,7 @@ export default function PhoneAuth() {
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <Label htmlFor="otp">Verification Code</Label>
+                  <Label htmlFor="otp" className="text-base font-medium">Verification Code</Label>
                   <span className="text-xs text-muted-foreground">
                     {countryCode + phoneNumber.replace(/^0+/, '')}
                   </span>
@@ -225,14 +226,14 @@ export default function PhoneAuth() {
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
                   maxLength={6}
-                  className="text-center text-lg tracking-[0.5em]"
+                  className="text-center text-lg tracking-[0.5em] rounded-lg border-gray-200 bg-gray-50 focus:ring-2 focus:ring-primary"
                   autoFocus
                   required
                 />
               </div>
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full rounded-lg bg-primary text-white font-semibold py-2 shadow hover:bg-primary/90 transition"
                 disabled={isLoading || otp.length !== 6}
               >
                 {isLoading ? "Verifying..." : "Verify"}
@@ -242,7 +243,7 @@ export default function PhoneAuth() {
             <div className="text-center">
               <Button 
                 variant="link" 
-                className="text-xs"
+                className="text-xs text-primary"
                 onClick={handleResendOtp}
                 disabled={timer > 0 || isLoading}
               >

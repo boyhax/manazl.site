@@ -45,14 +45,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const listingPages = listings?.map((listing) => ({
-    url: `https://www.manazl.com/listing/${listing.short_id}`,
+    url: `https://manazl.com/listing/${listing.short_id}`,
     lastModified: listing.updated_at || new Date().toISOString(),
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
   const blogPostPages = blogPosts.map((post) => ({
-    url: `https://www.manazl.com/blog/${post.slug}`,
+    url: `https://manazl.com/blog/${post.slug}`,
     lastModified: post.updatedAt,
     changeFrequency: "monthly" as const,
     priority: 0.6,

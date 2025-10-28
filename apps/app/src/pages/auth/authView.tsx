@@ -1,4 +1,3 @@
-
 import {
   Card,
   CardContent,
@@ -16,14 +15,13 @@ export default function () {
   const { t } = useTranslate();
 
   return (
-    <IonContent>
-      <Card className="w-[350px] shadow-none border-none sm:border bg-background mx-auto">
-        
-        <CardContent className="pt-28">
+    <IonContent className="flex flex-col items-center justify-center min-h-[60vh] bg-transparent">
+      <Card className="w-full max-w-md mx-auto rounded-2xl shadow-xl border border-gray-100 bg-white">
+        <CardContent className="py-10 px-6 sm:px-10">
           <PhoneAuth />
         </CardContent>
-        <CardFooter className="flex justify-center mt-28">
-          <p className="text-sm text-muted-foreground text-center">
+        <CardFooter className="flex justify-center mt-2 pb-6">
+          <p className="text-xs text-muted-foreground text-center">
             {t("Subject to the Privacy Policy and Terms of Service.")}
           </p>
         </CardFooter>

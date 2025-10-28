@@ -17,9 +17,15 @@ export default function () {
       <Header>
         <HeaderBackButton/>
       </Header>
-      <div className={"w-full h-full flex justify-center items-center p-4 sm:p-8"}>
-        <AuthView />
-      </div>
+      <main className="flex flex-col items-center justify-center min-h-[80vh] bg-gray-50 px-4">
+        <div className="flex flex-col items-center mb-8">
+          <img className="m-auto w-24 h-24 rounded-lg shadow-md" src="/assets/icon.png" alt="Description" />
+          <h3 className="text-center text-2xl font-semibold mt-4">Welcome to Manazl</h3>
+        </div>
+        <div className="w-full max-w-md">
+          <AuthView />
+        </div>
+      </main>
     </Page>
   );
 }
