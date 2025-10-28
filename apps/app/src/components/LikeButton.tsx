@@ -4,7 +4,7 @@ import useLike from "src/hooks/useLike";
 import { auth } from "src/state/auth";
 import { Button } from "./ui/button";
 import { cn } from "src/lib/utils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { useToast } from "src/hooks/use-toast";
 

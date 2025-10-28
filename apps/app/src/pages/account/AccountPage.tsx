@@ -31,7 +31,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import Page from "src/components/Page";
 import useProfile from "src/hooks/useProfile";
 import useSearchfilter from "src/hooks/useSearchFilter";

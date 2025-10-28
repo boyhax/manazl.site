@@ -4,7 +4,7 @@ import {
 } from "@ionic/react";
 import { useTranslate } from "@tolgee/react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import useSupabaseQuery from "src/hooks/useSupabaseQuery";
 import { getuserid } from "src/lib/db/auth";
 import supabase from "src/lib/supabase";

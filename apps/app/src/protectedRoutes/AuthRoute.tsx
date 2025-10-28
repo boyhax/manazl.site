@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import LoginPage from "src/pages/auth/loginPage";
 import { auth } from "src/state/auth";
 import ProtectedRoute from "../components/protectedRoute";

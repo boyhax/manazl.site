@@ -3,7 +3,7 @@ import {
   IonProgressBar,
   useIonToast
 } from "@ionic/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import BackButton from "src/components/BackButton";
 import Header from "src/components/Header";

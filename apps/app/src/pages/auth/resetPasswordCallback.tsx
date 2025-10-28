@@ -5,7 +5,7 @@ import {
 } from "@ionic/react";
 import { useTranslate } from "@tolgee/react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import Page from "src/components/Page";
 import supabase from "src/lib/supabase";
 import { auth } from "src/state/auth";

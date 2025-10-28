@@ -2,7 +2,7 @@ import { IonProgressBar } from "@ionic/react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslate } from "@tolgee/react";
 import { error } from "console";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import { ErrorMessage } from "src/components/errorMessage";
 import useMyListing from "src/hooks/useMyListing";
 import supabase from "src/lib/supabase";

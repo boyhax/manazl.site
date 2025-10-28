@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useIonToast } from "@ionic/react";
 import { useTranslate } from "@tolgee/react";
 import { Loader2 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import BackButton from "src/components/BackButton";
 import Header from "src/components/Header";
 import Page from "src/components/Page";

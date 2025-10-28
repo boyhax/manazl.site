@@ -20,7 +20,7 @@ import Avatar from "./Avatar";
 import { personOutline } from "ionicons/icons";
 import ProfileAvatar from "./ProfileAvatar";
 import { BiUser } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const AccountHeader = (Props: any) => {
   const navigate= useNavigate();

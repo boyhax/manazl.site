@@ -1,6 +1,6 @@
 import qs from "qs";
 import { useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 
 export default function useSearchfilter<T>() {
   const [params, setparams] = useSearchParams();

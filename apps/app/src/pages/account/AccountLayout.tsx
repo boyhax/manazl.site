@@ -4,7 +4,7 @@ import Page from "src/components/Page";
 import { auth } from "src/state/auth";
 
 import { useTranslate } from "@tolgee/react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router";
 
 export default function () {
   const { session, loading } = auth();

@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, Link, useSearchParams } from "react-router";
 import { useTranslate } from "@tolgee/react";
 import { addDays, differenceInDays } from "date-fns";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";

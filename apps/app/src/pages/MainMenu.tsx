@@ -16,7 +16,7 @@ import {
 } from "react-icons/ci";
 
 import { BiChevronRight, BiHomeSmile } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useTranslate } from "@tolgee/react";
 const listitems = [
   

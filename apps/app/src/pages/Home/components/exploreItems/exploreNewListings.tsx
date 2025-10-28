@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { explore } from "src/state/explore";
 import { SmallPreview } from "./components/exploreListings";
 import ListingPreview from "../HostCard";

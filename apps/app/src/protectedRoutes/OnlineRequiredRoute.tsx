@@ -1,7 +1,7 @@
 import { IonContent, IonIcon, IonText } from "@ionic/react";
 import { useTranslate } from "@tolgee/react";
 import { cloudOfflineOutline } from "ionicons/icons";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import Page from "src/components/Page";
 import ProtectedRoute from "src/components/protectedRoute";
 import { useNetworkStore } from "src/state/Online";

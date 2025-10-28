@@ -21,7 +21,7 @@ import 'react-nice-dates/build/style.css';
 import useSearchfilter from "src/hooks/useSearchFilter";
 import { listingfilter } from "src/lib/db/listings";
 import options from "src/lib/db/options";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import { formatDate } from "src/lib/utils/formatDate";
 import { cn } from "src/lib/utils";
 

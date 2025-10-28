@@ -11,7 +11,7 @@ import { useTranslate } from "@tolgee/react";
 import { useState } from "react";
 import { BiCalendar, BiDollar } from "react-icons/bi";
 import { MdChatBubble } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { Button } from "src/components/ui/button";
 import { BOOKINGSTATES } from "src/lib/db/bookings";
 import supabase from "src/lib/supabase";

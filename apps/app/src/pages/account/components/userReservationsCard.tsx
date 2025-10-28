@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { format } from "date-fns";
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 type Reservation = {
   title: string;

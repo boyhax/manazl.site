@@ -3,7 +3,7 @@ import {
 } from "@ionic/react";
 
 import { useTranslate } from "@tolgee/react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import {
   Card,
   CardContent,

@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { BiMenu } from "react-icons/bi"
 import { cn } from "@/lib/utils"
 import { Popover } from "@radix-ui/react-popover"

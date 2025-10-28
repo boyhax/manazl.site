@@ -61,20 +61,16 @@ export default function () {
       onIonScroll={(e) =>
         e.detail.velocityY != 0 ? setVisible(e.detail.velocityY < 0) : null
       }
-      className={"scroll-smooth  sm:mx-auto"}
+      className="scroll-smooth "
     >
       <ScrollArea>
         {isLoading ? <IonProgressBar type={"indeterminate"} /> : null}
         {!isLoading && data?.pages[0].length == 0 && (
-          <div className={"w-full px-5  text-center "}>
+          <div className="w-full px-5 py-10 text-center">
             <EmptyMessage message={t("No Result Found")} />
           </div>
         )}
-        <div
-          className={
-            "flex flex-col  justify-start items-center gap-2 w-full max-w-sm mx-auto "
-          }
-        >
+        <div className="flex flex-col items-center justify-center gap-4 w-full max-w-2xl mx-auto px-2 py-6">
           {data
             ? data.pages
               .reduce((acc, cur) => acc.concat(cur), [])
@@ -85,10 +81,11 @@ export default function () {
                     ...item,
                     cost: item?.rooms?.available?.sum || null,
                   }}
+                  className="w-full"
                 />
               ))
             : null}
-          <div className={"h-5"} />
+          <div className="h-5" />
         </div>
 
         <IonInfiniteScroll

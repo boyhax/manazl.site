@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { Share } from "@capacitor/share";
 import { useTolgee, useTranslate } from "@tolgee/react";
 

@@ -2,7 +2,7 @@ import {
   IonApp
 } from "@ionic/react";
 import { useEffect } from "react";
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router";
 // import { IonReactRouter } from "@ionic/react-router";
 
 /* Core CSS required for Ionic components to work properly */
@@ -49,7 +49,6 @@ import { setupIonicReact } from "@ionic/react";
 
 import { OutputFormat, setDefaults } from "react-geocode";
 
-import { ErrorBoundary, router } from "./router";
 import { store } from "./state/Store";
 import { useAppDirection } from "./hooks/useAppDirection";
 setupIonicReact({});
@@ -69,12 +68,12 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 // import function to register Swiper custom elements
 import { register } from "swiper/element/bundle";
-import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 import { Loader } from "@googlemaps/js-api-loader";
 import { useTolgee } from "@tolgee/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "./components/ui/toaster";
 import useTheme from "./hooks/useTheme";
+import { AppRouter } from "./router2";
 // register Swiper custom elements
 register();
 
@@ -104,7 +103,7 @@ export default function () {
         }}
       >
         <Toaster />
-        <RouterProvider router={router} fallbackElement={<ErrorBoundary />} />
+        <AppRouter/>
       </IonApp>
       <ReactQueryDevtools buttonPosition="bottom-left" client={queryClient} initialIsOpen={false} />
     </QueryClientProvider>

@@ -31,7 +31,7 @@
 // import { format } from "date-fns";
 // import { Edit, Plus } from "lucide-react";
 // import { useState } from "react";
-// import { Link } from "react-router-dom";
+// import { Link } from "react-router";
 // import useFetch from "src/hooks/useFetch";
 // import useProfile from "src/hooks/useProfile";
 // import { getuserid } from "src/lib/db/auth";
@@ -263,7 +263,7 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { useTranslate } from "@tolgee/react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { IonContent, IonProgressBar, useIonToast } from "@ionic/react";
 import { Edit, Plus, Calendar, Home, User, Settings, LogOut } from "lucide-react";
 

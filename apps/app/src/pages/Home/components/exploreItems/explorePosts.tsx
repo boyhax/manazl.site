@@ -6,7 +6,7 @@ import {
   IonCardTitle,
   IonListHeader
 } from "@ionic/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import Avatar from "src/components/Avatar";
 import Img from "src/components/Image";
 import useSupabaseQuery from "src/hooks/useSupabaseQuery";

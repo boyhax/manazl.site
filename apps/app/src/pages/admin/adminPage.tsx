@@ -10,7 +10,7 @@ import {
   IonTitle,
 } from "@ionic/react";
 import { Outlet, useLocation } from "react-router";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import Header from "src/components/Header";
 import { Button } from "src/components/ui/button";
 import { decodeToken, useJwt } from "react-jwt";

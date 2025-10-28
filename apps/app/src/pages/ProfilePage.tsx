@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import { callOutline, chatbubble, key } from "ionicons/icons";
 import { useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router";
 import supabase from "src/lib/supabase";
 
 import Avatar from "src/components/Avatar";

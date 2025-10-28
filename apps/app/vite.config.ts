@@ -4,8 +4,6 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-    // depending on your application, base can also be "/"
-    base: '',
     plugins: [
         react(), 
         viteTsconfigPaths(),
@@ -46,7 +44,6 @@ export default defineConfig({
           src: "/src",
         },
     },
-    root: '',
       
     server: {
         // this ensures that the browser opens upon server start

@@ -21,7 +21,7 @@ import { useTranslate } from "@tolgee/react";
 import { useEffect, useState } from "react";
 import { FaFeather } from "react-icons/fa6";
 import { RiQuillPenFill } from "react-icons/ri";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import Avatar from "src/components/Avatar";
 import BackButton from "src/components/BackButton";
 import Header from "src/components/Header";

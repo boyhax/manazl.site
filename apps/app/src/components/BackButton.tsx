@@ -1,6 +1,6 @@
 import { IonButton, IonFab, IonFabButton, IonIcon } from "@ionic/react";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useAppDirection } from "src/hooks/useAppDirection";

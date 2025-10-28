@@ -49,7 +49,7 @@ import { BOOKINGSTATES, cancel_booking } from "src/lib/db/bookings";
 import supabase from "src/lib/supabase";
 import { auth } from "src/state/auth";
 import { useCurrency } from "src/hooks/useCurrency";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { MdChatBubble } from "react-icons/md";
 import { getChatId } from "src/pages/chat/actions/chat.server";
 

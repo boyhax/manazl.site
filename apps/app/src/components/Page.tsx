@@ -1,7 +1,6 @@
-
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import * as React from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -9,11 +8,12 @@ import { IonFooter, IonPage } from "@ionic/react"
 
 interface PageProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
+  hasHeader?: boolean
 }
 
-export default function Page({ children, className, ...props }: PageProps) {
+export default function Page({ children, className, hasHeader, ...props }: PageProps) {
   return (
-    <IonPage className={cn("", className)} {...props}>
+    <IonPage className={cn( "top-safe" , className)} {...props}>
       {children}
     </IonPage>
   )

@@ -1,5 +1,5 @@
 import { IonLabel } from "@ionic/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import Img from "src/components/Image";
 import { useTranslate } from "@tolgee/react";
 import { store } from "src/state/Store";

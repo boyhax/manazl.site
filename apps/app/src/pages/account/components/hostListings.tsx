@@ -22,7 +22,7 @@ import { useTranslate } from "@tolgee/react";
 import { format } from "date-fns";
 import { CalendarFold, Edit, Plus, Settings } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import HostReservationsCard from "./hostReservationsCard";
 import { Alert, AlertDescription, AlertTitle } from "src/components/ui/alert";
 import Room_availabilty_sheet from "src/pages/host/variant/room_availabilty_sheet";

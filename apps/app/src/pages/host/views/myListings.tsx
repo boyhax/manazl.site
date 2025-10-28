@@ -16,7 +16,7 @@ import { addOutline, informationCircleOutline } from "ionicons/icons";
 import { useState } from "react";
 import { BiTrash } from "react-icons/bi";
 import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import Img from "src/components/Image";
 import ImageSection from "src/components/imageSection";
 import useMyListing from "src/hooks/useMyListing";

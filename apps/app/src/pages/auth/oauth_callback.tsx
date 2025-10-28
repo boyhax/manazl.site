@@ -4,7 +4,7 @@ import {
   useIonToast
 } from "@ionic/react";
 import { useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router";
 import Page from "src/components/Page";
 import supabase from "src/lib/supabase";
 

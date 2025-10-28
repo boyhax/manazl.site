@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react"
 import { latLng, LatLng, latLngBounds } from "leaflet"
 import { useMapEvents } from "react-leaflet"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import { BiChevronLeft, BiCurrentLocation } from "react-icons/bi"
 import { useMediaQuery } from "usehooks-ts"
 import MapSearchBar from "src/components/MapSearchBar"

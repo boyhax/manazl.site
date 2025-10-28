@@ -5,7 +5,7 @@ import {
   IonSkeletonText
 } from "@ionic/react";
 import { arrowForwardSharp } from "ionicons/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import Img from "src/components/Image";
 import ExploreLine from "./exploreLine";
 import { useTranslate } from "@tolgee/react";

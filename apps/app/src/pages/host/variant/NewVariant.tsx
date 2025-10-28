@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslate } from "@tolgee/react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import BackButton from "src/components/BackButton";
 import Header from "src/components/Header";
 import Page from "src/components/Page";

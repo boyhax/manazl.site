@@ -2,7 +2,7 @@ import { latLng } from "leaflet";
 import { Marker } from "react-leaflet";
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { DotIcon } from "src/lib/utils/leafletMapIcons";
 
 interface ListingMarkerProps {

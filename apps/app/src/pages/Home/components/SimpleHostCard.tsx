@@ -4,7 +4,7 @@ import { Share } from "@capacitor/share";
 import { useTranslate } from "@tolgee/react";
 import { BiErrorCircle, BiShare, BiStar } from "react-icons/bi";
 import { useInView } from "react-intersection-observer";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import LikeButton from "src/components/LikeButton";
 import getPathTo from "src/lib/utils/getPathTo";
 import { useSearch } from "src/state/search";

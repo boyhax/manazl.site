@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router";
 import Page, { Header, HeaderBackButton } from "src/components/Page";
 import AuthView from "src/pages/auth/authView";
 import { auth } from "src/state/auth";
